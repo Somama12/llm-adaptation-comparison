@@ -1,0 +1,7 @@
+scikit-learn>=1.3
+numpy>=1.24
+
+# For future work (embedding-based retrieval, local LLM inference):
+# sentence-transformers
+# faiss-cpu
+# ollama

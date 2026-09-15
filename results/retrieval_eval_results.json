@@ -1,0 +1,371 @@
+{
+  "v1_indexed_vs_v1_truth": [
+    {
+      "id": "stable_1",
+      "category": "stable",
+      "question": "How long is the VPN session timeout before re-authentication?",
+      "expected_section": "1.3 VPN Access",
+      "retrieved_section": "1.3 VPN Access",
+      "section_match": true,
+      "retrieval_score": 0.518,
+      "expected_answer": "8 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_2",
+      "category": "stable",
+      "question": "How many business days does it take to process an approved refund?",
+      "expected_section": "2.2 Refund Processing Time",
+      "retrieved_section": "2.2 Refund Processing Time",
+      "section_match": true,
+      "retrieval_score": 0.437,
+      "expected_answer": "5 business days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_3",
+      "category": "stable",
+      "question": "How often are automated backups performed for paid-tier accounts?",
+      "expected_section": "3.2 Backup Frequency",
+      "retrieved_section": "3.2 Backup Frequency",
+      "section_match": true,
+      "retrieval_score": 0.726,
+      "expected_answer": "Once every 24 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_4",
+      "category": "stable",
+      "question": "How long after ticket submission are unresolved tickets escalated to Tier 2?",
+      "expected_section": "4.3 Escalation Path",
+      "retrieved_section": "4.3 Escalation Path",
+      "section_match": true,
+      "retrieval_score": 0.565,
+      "expected_answer": "48 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_5",
+      "category": "stable",
+      "question": "How much storage does the Pro Plan include and at what price?",
+      "expected_section": "5.2 Pro Plan",
+      "retrieved_section": "5.2 Pro Plan",
+      "section_match": true,
+      "retrieval_score": 0.598,
+      "expected_answer": "2 TB for $12.99/month",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_1",
+      "category": "changed",
+      "question": "How often must employee passwords be reset?",
+      "expected_section": "1.1 Password Reset Frequency",
+      "retrieved_section": "1.1 Password Reset Frequency",
+      "section_match": true,
+      "retrieval_score": 0.641,
+      "expected_answer": "90 days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_2",
+      "category": "changed",
+      "question": "Is two-factor authentication mandatory for standard employee accounts?",
+      "expected_section": "1.2 Two-Factor Authentication",
+      "retrieved_section": "1.2 Two-Factor Authentication",
+      "section_match": true,
+      "retrieval_score": 0.772,
+      "expected_answer": "No, it is optional for standard accounts (mandatory only for admin accounts)",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_3",
+      "category": "changed",
+      "question": "Within how many days of purchase can a customer request a full refund?",
+      "expected_section": "2.1 Standard Refund Window",
+      "retrieved_section": "2.1 Standard Refund Window",
+      "section_match": true,
+      "retrieval_score": 0.483,
+      "expected_answer": "30 days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_4",
+      "category": "changed",
+      "question": "How long are customer data backups retained after account deletion?",
+      "expected_section": "3.1 Backup Retention Period",
+      "retrieved_section": "3.1 Backup Retention Period",
+      "section_match": true,
+      "retrieval_score": 0.711,
+      "expected_answer": "30 days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_5",
+      "category": "changed",
+      "question": "What is the initial support response time for priority-tier customers?",
+      "expected_section": "4.2 Response Time \u2014 Priority Tier",
+      "retrieved_section": "4.2 Response Time \u2014 Priority Tier",
+      "section_match": true,
+      "retrieval_score": 0.748,
+      "expected_answer": "4 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_6",
+      "category": "changed",
+      "question": "How much storage does the Basic Plan include?",
+      "expected_section": "5.1 Basic Plan",
+      "retrieved_section": "5.1 Basic Plan",
+      "section_match": true,
+      "retrieval_score": 0.585,
+      "expected_answer": "100 GB",
+      "answer_found_in_chunk": true
+    }
+  ],
+  "v1_indexed_vs_v2_truth": [
+    {
+      "id": "stable_1",
+      "category": "stable",
+      "question": "How long is the VPN session timeout before re-authentication?",
+      "expected_section": "1.3 VPN Access",
+      "retrieved_section": "1.3 VPN Access",
+      "section_match": true,
+      "retrieval_score": 0.518,
+      "expected_answer": "8 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_2",
+      "category": "stable",
+      "question": "How many business days does it take to process an approved refund?",
+      "expected_section": "2.2 Refund Processing Time",
+      "retrieved_section": "2.2 Refund Processing Time",
+      "section_match": true,
+      "retrieval_score": 0.437,
+      "expected_answer": "5 business days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_3",
+      "category": "stable",
+      "question": "How often are automated backups performed for paid-tier accounts?",
+      "expected_section": "3.2 Backup Frequency",
+      "retrieved_section": "3.2 Backup Frequency",
+      "section_match": true,
+      "retrieval_score": 0.726,
+      "expected_answer": "Once every 24 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_4",
+      "category": "stable",
+      "question": "How long after ticket submission are unresolved tickets escalated to Tier 2?",
+      "expected_section": "4.3 Escalation Path",
+      "retrieved_section": "4.3 Escalation Path",
+      "section_match": true,
+      "retrieval_score": 0.565,
+      "expected_answer": "48 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_5",
+      "category": "stable",
+      "question": "How much storage does the Pro Plan include and at what price?",
+      "expected_section": "5.2 Pro Plan",
+      "retrieved_section": "5.2 Pro Plan",
+      "section_match": true,
+      "retrieval_score": 0.598,
+      "expected_answer": "2 TB for $12.99/month",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_1",
+      "category": "changed",
+      "question": "How often must employee passwords be reset?",
+      "expected_section": "1.1 Password Reset Frequency",
+      "retrieved_section": "1.1 Password Reset Frequency",
+      "section_match": true,
+      "retrieval_score": 0.641,
+      "expected_answer": "60 days",
+      "answer_found_in_chunk": false
+    },
+    {
+      "id": "changed_2",
+      "category": "changed",
+      "question": "Is two-factor authentication mandatory for standard employee accounts?",
+      "expected_section": "1.2 Two-Factor Authentication",
+      "retrieved_section": "1.2 Two-Factor Authentication",
+      "section_match": true,
+      "retrieval_score": 0.772,
+      "expected_answer": "Yes, it is now mandatory for all employee accounts",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_3",
+      "category": "changed",
+      "question": "Within how many days of purchase can a customer request a full refund?",
+      "expected_section": "2.1 Standard Refund Window",
+      "retrieved_section": "2.1 Standard Refund Window",
+      "section_match": true,
+      "retrieval_score": 0.483,
+      "expected_answer": "45 days",
+      "answer_found_in_chunk": false
+    },
+    {
+      "id": "changed_4",
+      "category": "changed",
+      "question": "How long are customer data backups retained after account deletion?",
+      "expected_section": "3.1 Backup Retention Period",
+      "retrieved_section": "3.1 Backup Retention Period",
+      "section_match": true,
+      "retrieval_score": 0.711,
+      "expected_answer": "90 days",
+      "answer_found_in_chunk": false
+    },
+    {
+      "id": "changed_5",
+      "category": "changed",
+      "question": "What is the initial support response time for priority-tier customers?",
+      "expected_section": "4.2 Response Time \u2014 Priority Tier",
+      "retrieved_section": "4.2 Response Time \u2014 Priority Tier",
+      "section_match": true,
+      "retrieval_score": 0.748,
+      "expected_answer": "2 hours",
+      "answer_found_in_chunk": false
+    },
+    {
+      "id": "changed_6",
+      "category": "changed",
+      "question": "How much storage does the Basic Plan include?",
+      "expected_section": "5.1 Basic Plan",
+      "retrieved_section": "5.1 Basic Plan",
+      "section_match": true,
+      "retrieval_score": 0.585,
+      "expected_answer": "150 GB",
+      "answer_found_in_chunk": false
+    }
+  ],
+  "v2_indexed_vs_v2_truth": [
+    {
+      "id": "stable_1",
+      "category": "stable",
+      "question": "How long is the VPN session timeout before re-authentication?",
+      "expected_section": "1.3 VPN Access",
+      "retrieved_section": "1.3 VPN Access",
+      "section_match": true,
+      "retrieval_score": 0.518,
+      "expected_answer": "8 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_2",
+      "category": "stable",
+      "question": "How many business days does it take to process an approved refund?",
+      "expected_section": "2.2 Refund Processing Time",
+      "retrieved_section": "2.2 Refund Processing Time",
+      "section_match": true,
+      "retrieval_score": 0.437,
+      "expected_answer": "5 business days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_3",
+      "category": "stable",
+      "question": "How often are automated backups performed for paid-tier accounts?",
+      "expected_section": "3.2 Backup Frequency",
+      "retrieved_section": "3.2 Backup Frequency",
+      "section_match": true,
+      "retrieval_score": 0.726,
+      "expected_answer": "Once every 24 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_4",
+      "category": "stable",
+      "question": "How long after ticket submission are unresolved tickets escalated to Tier 2?",
+      "expected_section": "4.3 Escalation Path",
+      "retrieved_section": "4.3 Escalation Path",
+      "section_match": true,
+      "retrieval_score": 0.565,
+      "expected_answer": "48 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "stable_5",
+      "category": "stable",
+      "question": "How much storage does the Pro Plan include and at what price?",
+      "expected_section": "5.2 Pro Plan",
+      "retrieved_section": "5.2 Pro Plan",
+      "section_match": true,
+      "retrieval_score": 0.598,
+      "expected_answer": "2 TB for $12.99/month",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_1",
+      "category": "changed",
+      "question": "How often must employee passwords be reset?",
+      "expected_section": "1.1 Password Reset Frequency",
+      "retrieved_section": "1.1 Password Reset Frequency [UPDATED]",
+      "section_match": true,
+      "retrieval_score": 0.641,
+      "expected_answer": "60 days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_2",
+      "category": "changed",
+      "question": "Is two-factor authentication mandatory for standard employee accounts?",
+      "expected_section": "1.2 Two-Factor Authentication",
+      "retrieved_section": "1.2 Two-Factor Authentication [UPDATED]",
+      "section_match": true,
+      "retrieval_score": 0.719,
+      "expected_answer": "Yes, it is now mandatory for all employee accounts",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_3",
+      "category": "changed",
+      "question": "Within how many days of purchase can a customer request a full refund?",
+      "expected_section": "2.1 Standard Refund Window",
+      "retrieved_section": "2.1 Standard Refund Window [UPDATED]",
+      "section_match": true,
+      "retrieval_score": 0.478,
+      "expected_answer": "45 days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_4",
+      "category": "changed",
+      "question": "How long are customer data backups retained after account deletion?",
+      "expected_section": "3.1 Backup Retention Period",
+      "retrieved_section": "3.1 Backup Retention Period [UPDATED]",
+      "section_match": true,
+      "retrieval_score": 0.702,
+      "expected_answer": "90 days",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_5",
+      "category": "changed",
+      "question": "What is the initial support response time for priority-tier customers?",
+      "expected_section": "4.2 Response Time \u2014 Priority Tier",
+      "retrieved_section": "4.2 Response Time \u2014 Priority Tier [UPDATED]",
+      "section_match": true,
+      "retrieval_score": 0.665,
+      "expected_answer": "2 hours",
+      "answer_found_in_chunk": true
+    },
+    {
+      "id": "changed_6",
+      "category": "changed",
+      "question": "How much storage does the Basic Plan include?",
+      "expected_section": "5.1 Basic Plan",
+      "retrieved_section": "5.1 Basic Plan [UPDATED]",
+      "section_match": true,
+      "retrieval_score": 0.585,
+      "expected_answer": "150 GB",
+      "answer_found_in_chunk": true
+    }
+  ]
+}
