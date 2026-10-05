@@ -1,0 +1,101 @@
+[
+  {
+    "id": "stable_1",
+    "category": "stable",
+    "question": "After how many hours does a remote connection require another login?",
+    "answer_v1": "8 hours",
+    "answer_v2": "8 hours",
+    "changed": false,
+    "section": "1.3 VPN Access"
+  },
+  {
+    "id": "stable_2",
+    "category": "stable",
+    "question": "How many working days until an accepted reimbursement is returned?",
+    "answer_v1": "5 business days",
+    "answer_v2": "5 business days",
+    "changed": false,
+    "section": "2.2 Refund Processing Time"
+  },
+  {
+    "id": "stable_3",
+    "category": "stable",
+    "question": "What is the interval between automatic snapshots for paying subscribers?",
+    "answer_v1": "Once every 24 hours",
+    "answer_v2": "Once every 24 hours",
+    "changed": false,
+    "section": "3.2 Backup Frequency"
+  },
+  {
+    "id": "stable_4",
+    "category": "stable",
+    "question": "After what duration without a resolution does a case move to a level-two specialist?",
+    "answer_v1": "48 hours",
+    "answer_v2": "48 hours",
+    "changed": false,
+    "section": "4.3 Escalation Path"
+  },
+  {
+    "id": "stable_5",
+    "category": "stable",
+    "question": "Give the capacity and monthly charge of the professional subscription.",
+    "answer_v1": "2 TB for $12.99/month",
+    "answer_v2": "2 TB for $12.99/month",
+    "changed": false,
+    "section": "5.2 Pro Plan"
+  },
+  {
+    "id": "changed_1",
+    "category": "changed",
+    "question": "What is the maximum age in days of a staff password before rotation?",
+    "answer_v1": "90 days",
+    "answer_v2": "60 days",
+    "changed": true,
+    "section": "1.1 Password Reset Frequency"
+  },
+  {
+    "id": "changed_2",
+    "category": "changed",
+    "question": "Must an ordinary staff member enable a second authentication factor?",
+    "answer_v1": "No, it is optional for standard accounts (mandatory only for admin accounts)",
+    "answer_v2": "Yes, it is now mandatory for all employee accounts",
+    "changed": true,
+    "section": "1.2 Two-Factor Authentication"
+  },
+  {
+    "id": "changed_3",
+    "category": "changed",
+    "question": "How many days does a buyer have to ask for their money back?",
+    "answer_v1": "30 days",
+    "answer_v2": "45 days",
+    "changed": true,
+    "section": "2.1 Standard Refund Window"
+  },
+  {
+    "id": "changed_4",
+    "category": "changed",
+    "question": "How many days do backup copies survive after a customer closes their account?",
+    "answer_v1": "30 days",
+    "answer_v2": "90 days",
+    "changed": true,
+    "section": "3.1 Backup Retention Period"
+  },
+  {
+    "id": "changed_5",
+    "category": "changed",
+    "question": "How many hours should a premium customer wait for the first support reply?",
+    "answer_v1": "4 hours",
+    "answer_v2": "2 hours",
+    "changed": true,
+    "section": "4.2 Response Time \u2014 Priority Tier"
+  },
+  {
+    "id": "changed_6",
+    "category": "changed",
+    "question": "What capacity in gigabytes comes with the entry-level subscription?",
+    "answer_v1": "100 GB",
+    "answer_v2": "150 GB",
+    "changed": true,
+    "section": "5.1 Basic Plan"
+  }
+]

@@ -1,6 +1,10 @@
-__pycache__/
-*.pyc
 .venv/
-venv/
+.tools/
+.cache/
+__pycache__/
+.pytest_cache/
+*.pyc
+artifacts/
 .DS_Store
-*.egg-info/
+.env
+.env.*
