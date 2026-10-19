@@ -37,7 +37,7 @@ For this workspace, a portable Ollama binary is in ignored `.tools/`. Start it w
 
 [Open the GPU notebook](https://colab.research.google.com/github/Somama12/llm-adaptation-comparison/blob/codex/midterm-experiments/notebooks/colab_lora.ipynb).
 
-Choose a T4 GPU runtime. Sign in to Hugging Face through the notebook and obtain access to `meta-llama/Llama-3.2-3B-Instruct` if needed. The notebook:
+Choose a T4 GPU runtime. The notebook uses the accessible `Qwen/Qwen2.5-3B-Instruct` checkpoint for every Colab condition. The originally planned `meta-llama/Llama-3.2-3B-Instruct` checkpoint remained gated for the project account, so this is a documented model change. The local Ollama/Llama pilot remains useful for its own staleness study; compare methods within the Colab/Qwen run for the controlled three-way result. The notebook:
 
 1. Runs TF-IDF RAG, embedding RAG, few-shot, and zero-shot using the same NF4 Hugging Face backend as LoRA.
 2. Trains a v1 adapter with completion-only loss and a fixed training budget.
