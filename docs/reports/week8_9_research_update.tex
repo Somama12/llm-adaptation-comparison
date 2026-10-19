@@ -33,7 +33,7 @@ The intended final product is a reproducible comparison with source code, raw re
 \clearpage
 \section{Work Completed: Weeks 8--9}
 \subsection{Week 8: model access and comparable GPU baselines}
-Hugging Face authentication succeeded, but the planned Llama~3.2~3B checkpoint download was denied for the project account. The Colab study therefore moved to the accessible \path{Qwen/Qwen2.5-3B-Instruct} checkpoint. Every Colab method uses this same base model. The local Llama pilot remains separate because changing the model, hardware, and backend prevents a controlled comparison between the two environments.
+Hugging Face authentication succeeded. The Colab study uses the accessible \path{Qwen/Qwen2.5-3B-Instruct} checkpoint. Every Colab method uses this same base model. The local Llama pilot remains separate because changing the model, hardware, and backend prevents a controlled comparison between the two environments.
 
 TF-IDF RAG, MiniLM embedding RAG, 13-example few-shot prompting, and a zero-shot control were run through the Hugging Face NF4 backend on a Tesla T4. RAG and few-shot were evaluated with both handbook versions. Zero-shot received no handbook information. The run saved 77 answers and 121 scoring rows, including original, stale, and refreshed conditions. The implementation uses Python, PyTorch, Transformers, sentence-transformers, scikit-learn, and JSON evidence files.
 
