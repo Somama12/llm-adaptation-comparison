@@ -1,0 +1,21 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "version": "v1",
+  "output": "artifacts/lora-v1",
+  "resume_adapter": null,
+  "epochs": 20,
+  "seed": 42,
+  "training_examples": 13,
+  "train_seconds": 124.21089020299996,
+  "peak_allocated_cuda_bytes": 3612005888,
+  "gpu": "Tesla T4",
+  "metrics": {
+    "train_runtime": 123.7193,
+    "train_samples_per_second": 2.102,
+    "train_steps_per_second": 0.647,
+    "total_flos": 396097280409600.0,
+    "train_loss": 0.8343251563608647,
+    "epoch": 20.0
+  },
+  "note": "Fixed epoch budget; no tuning on held-out evaluation answers."
+}

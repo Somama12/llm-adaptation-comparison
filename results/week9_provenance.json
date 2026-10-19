@@ -1,0 +1,17 @@
+{
+  "packages": {
+    "torch": "2.11.0+cu130",
+    "transformers": "4.57.6",
+    "peft": "0.21.1",
+    "accelerate": "1.15.0",
+    "bitsandbytes": "0.50.2",
+    "huggingface-hub": "0.36.2"
+  },
+  "files": {
+    "results/colab_baselines.json": "cc0a65a8652a6d40beeed982c2bbeb10068c4053d3b90764376b445f0e35c626",
+    "results/lora_v1.json": "ab9e60867fe5aefb29c6e0e5279952580c811ddbc3df556b59d60cb0a4e5dd61",
+    "results/training_v1.json": "acab2b4d85b763b1c4c42488019192bbfecad0882bc03552382866e1037f8428",
+    "artifacts/lora-v1/adapter_model.safetensors": "cd284d50b048a42cfd1e0d46d0cb20fe666f7af6bd13292c01a72c9f8d1426ae",
+    "artifacts/lora-v1/adapter_config.json": "16b26c997df2cf58a140a1e0fdf193336d19d0fad9f2f8ba9a9a9c1b6929d855"
+  }
+}
