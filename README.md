@@ -12,7 +12,7 @@ A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** o
 - Colab notebook for GPU execution, with same-backend baselines.
 - Per-answer accuracy, retrieval matches, latency, token counts, index-build time, training time and peak CUDA allocation.
 
-**Implemented does not mean experimentally completed.** Completed local results are in `results/` and summarized in `docs/`. LoRA training results must be produced by running the Colab notebook; no LoRA scores are invented or assumed.
+**Weeks 8–9 experiments are complete:** same-model Qwen Colab baselines, Version 1 QLoRA training, and initial/stale evaluation are saved in `results/`. See [Week 8–9 evidence and remaining work](docs/WEEK8_9.md) and [detailed results](docs/week8_9_results.md). Version 2 continued training remains for Week 10. The earlier midterm notes describe the historical Weeks 1–7 state.
 
 ## Setup and local experiments
 
