@@ -45,6 +45,8 @@ Choose a T4 GPU runtime. Sign in to Hugging Face through the notebook and obtain
 4. Continues training the v1 adapter on v2, then evaluates recovery.
 5. Downloads raw evaluation results and training measurements.
 
+The baseline and Version 1 cells each download their own completed result files, so Week 8 and Week 9 evidence can be preserved before the Version 2 update. In Colab, download the files when the browser prompts; the adapter weights remain in the runtime until the Version 2 cell finishes. Do not mark a run complete based on a partial JSON file: check `metadata.status` is `complete`.
+
 Do not compare Mac/Ollama latency directly with Colab/NF4 latency, or attribute backend differences to adaptation strategy. The main three-way comparison should use the Colab baselines and LoRA results together. The notebook requires a user-authenticated GPU session; its training recipe is not locally GPU-validated on the 8 GB Mac.
 
 ## Experimental design and limits
