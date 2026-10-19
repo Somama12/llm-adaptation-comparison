@@ -37,13 +37,15 @@ For this workspace, a portable Ollama binary is in ignored `.tools/`. Start it w
 
 [Open the GPU notebook](https://colab.research.google.com/github/Somama12/llm-adaptation-comparison/blob/codex/midterm-experiments/notebooks/colab_lora.ipynb).
 
-Choose a T4 GPU runtime. Sign in to Hugging Face through the notebook and obtain access to `meta-llama/Llama-3.2-3B-Instruct` if needed. The notebook:
+Choose a T4 GPU runtime. The notebook uses the accessible `Qwen/Qwen2.5-3B-Instruct` checkpoint for every Colab condition. The originally planned `meta-llama/Llama-3.2-3B-Instruct` checkpoint remained gated for the project account, so this is a documented model change. The local Ollama/Llama pilot remains useful for its own staleness study; compare methods within the Colab/Qwen run for the controlled three-way result. The notebook:
 
 1. Runs TF-IDF RAG, embedding RAG, few-shot, and zero-shot using the same NF4 Hugging Face backend as LoRA.
 2. Trains a v1 adapter with completion-only loss and a fixed training budget.
 3. Evaluates that adapter against v1 and v2 truth using the same generated answers.
 4. Continues training the v1 adapter on v2, then evaluates recovery.
 5. Downloads raw evaluation results and training measurements.
+
+The baseline and Version 1 cells each download their own completed result files, so Week 8 and Week 9 evidence can be preserved before the Version 2 update. In Colab, download the files when the browser prompts; the adapter weights remain in the runtime until the Version 2 cell finishes. Do not mark a run complete based on a partial JSON file: check `metadata.status` is `complete`.
 
 Do not compare Mac/Ollama latency directly with Colab/NF4 latency, or attribute backend differences to adaptation strategy. The main three-way comparison should use the Colab baselines and LoRA results together. The notebook requires a user-authenticated GPU session; its training recipe is not locally GPU-validated on the 8 GB Mac.
 
