@@ -14,6 +14,8 @@ A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** o
 
 **Weeks 8–9 experiments are complete:** same-model Qwen Colab baselines, Version 1 QLoRA training, and initial/stale evaluation are saved in `results/`. See [Week 8–9 evidence and remaining work](docs/WEEK8_9.md) and [detailed results](docs/week8_9_results.md). Version 2 continued training remains for Week 10. The earlier midterm notes describe the historical Weeks 1–7 state.
 
+The [Week 8–9 research report (PDF)](docs/reports/week8_9_research_update.pdf) and [LaTeX source](docs/reports/week8_9_research_update.tex) document the completed GPU experiments and the Week 10–11 plan.
+
 ## Setup and local experiments
 
 Python 3.11 is recommended. Install Ollama from https://ollama.com/download and start its server.

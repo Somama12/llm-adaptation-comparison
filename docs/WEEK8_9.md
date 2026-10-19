@@ -43,6 +43,6 @@ This small synthetic memorization pilot holds out wording, not facts. There is o
 
 ## Remaining work and checkpoint handoff
 
-Week 9 training and initial/stale evaluation are complete. Week 10 remains: continue the v1 adapter on v2 and measure recovery. Week 11 remains: finalize failure analysis, reproducibility, and final presentation/report. The separate Week 8–9 LaTeX/PDF report has not yet been produced.
+Week 9 training and initial/stale evaluation are complete. Week 10 remains: continue the v1 adapter on v2 and measure recovery. Week 11 remains: finalize failure analysis, reproducibility, and final presentation/report. The Week 8–9 research update is available as a [PDF](reports/week8_9_research_update.pdf) and editable [LaTeX source](reports/week8_9_research_update.tex), with architecture, measured results, the scoring audit, and reproducibility appendices.
 
 Adapter weights remain in the Colab runtime at `/content/llm-adaptation-comparison/artifacts/lora-v1`. A 16.73 MiB backup exists at `/content/week9_adapter_backup.zip`; browser downloads failed, so this archive is not yet backed up locally or in GitHub. Download it before the runtime expires. If it is lost, retrain using the fixed recipe before Week 10; the exact recorded weight hash may depend on runtime reproducibility. Raw measurements and training/provenance records are durably saved in this repository. Adapter weights are intentionally ignored by Git.
