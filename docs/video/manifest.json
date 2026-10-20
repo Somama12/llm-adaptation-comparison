@@ -1,50 +1,50 @@
 [
   {
     "scene": 1,
-    "title": "LLM Adaptation Comparison",
-    "duration_seconds": 29.512608,
-    "narration": "This presentation introduces Somama Siddiqui\u2019s Senior Seminar project: comparing ways to keep a language model accurate when factual information changes. The project compares retrieval augmented generation, few shot prompting, and low rank adaptation, or LoRA. The goal is to measure initial accuracy, errors caused by outdated knowledge, and recovery after an update. This walkthrough shows the implemented system and completed work through Week nine."
+    "title": "From experiment code to measured results",
+    "duration_seconds": 24.195238,
+    "narration": "Hi, here's my Week eight and nine update. My project compares three ways to keep a language model current: retrieval, few shot prompting, and LoRA fine tuning. Over these two weeks, I ran the GPU baselines, completed the first LoRA training run, and audited the answers. Let's look at the actual repository, the code behind those runs, and what the results tell us."
   },
   {
     "scene": 2,
-    "title": "A controlled, changing handbook",
-    "duration_seconds": 31.532744,
-    "narration": "The test domain is a synthetic cloud storage company called Nimbus. Its handbook has two versions. Eleven evaluated facts include five stable facts and six changed facts. For example, the refund window changes from thirty to forty five days. The implementation also creates thirteen adaptation examples. Evaluation questions use different wording, but deliberately test the same facts. This measures factual learning and updating, rather than generalization to new facts."
+    "title": "Run every baseline on the same model",
+    "duration_seconds": 25.541995,
+    "narration": "This is the baseline cell from my Colab notebook. It calls the experiment runner with the Hugging Face backend and the same Qwen model for retrieval, few shot, and zero shot. That matters because changing the model between methods would make the comparison harder to interpret. The cell also checks that the run is complete before downloading the results. These are saved GPU experiments, not a new training session running during this video."
   },
   {
     "scene": 3,
-    "title": "Three ways to supply knowledge",
-    "duration_seconds": 31.718503,
-    "narration": "The repository contains two retrieval implementations, a few shot prompt builder, a shared evaluation pipeline, and CUDA LoRA training. Retrieval supplies a relevant handbook passage at inference time. Few shot prompting supplies question and answer examples. LoRA updates a small set of model parameters. The Week eight and nine comparison uses the same Qwen two point five, three billion parameter model on a Tesla T four, keeping the earlier local Llama pilot separate."
+    "title": "Generate once, then check both versions",
+    "duration_seconds": 26.192154,
+    "narration": "Here's the evaluation loop. First, it retrieves a passage when the method needs one. Then it builds the prompt and generates an answer. The important part is below: the same answer gets checked against both handbook versions. So I can measure what happens when yesterday's knowledge meets today's policy, without generating a different answer and changing the comparison. Each answer, expected value, and score is saved for inspection."
   },
   {
     "scene": 4,
-    "title": "Run the retriever on both versions",
-    "duration_seconds": 30.255646,
-    "narration": "Here is an actual retrieval run using the repository\u2019s T F I D F retriever. The question asks how many days after purchase a customer can request a refund. With version one, the retrieved section contains thirty days. Rebuilding retrieval with version two returns the updated forty five day policy. These passages were produced by running the code for this video. This demonstrates retrieval; the language model results shown next come from the saved GPU experiments."
+    "title": "The actual QLoRA configuration",
+    "duration_seconds": 26.168934,
+    "narration": "For Week nine, I ran this training code. It loads the model in four bit precision and trains small LoRA adapters on the query and value projections. The rank is sixteen, with twenty epochs and thirteen examples. The training setup was already implemented; this week's milestone was completing the run and evaluating its output. This is a deliberately small training budget, so a weak result here doesn't mean fine tuning can never work."
   },
   {
     "scene": 5,
-    "title": "What the completed experiments show",
-    "duration_seconds": 29.744807,
-    "narration": "The audited results show both retrieval methods answering ten of eleven questions correctly with version one, and all eleven after refreshing to version two. Few shot prompting scores ten of eleven on each matching version. The version one LoRA adapter scores five of eleven. Its version two update is not yet complete. The stale column re scores the original answers against changed truth, without generating new answers. These are measurements from one small, controlled pilot."
+    "title": "The run finished, and the measurements are saved",
+    "duration_seconds": 24.822177,
+    "narration": "Here's the training log produced by that run. It used a Tesla T four and took about one hundred twenty four seconds. Peak allocated GPU memory was about three point three six gibibytes. That's memory allocated by the framework, not the entire GPU footprint. The log and evaluation answers are in the repository. The adapter itself still needs a durable backup check before I continue training it."
   },
   {
     "scene": 6,
-    "title": "An update can fail despite new examples",
-    "duration_seconds": 26.308254,
-    "narration": "One concrete failure appears in the saved version two few shot output. The expected refund window is forty five days, but the answer still says thirty days. Auditing individual answers also revealed that a stale answer can accidentally match a new policy. That is not evidence of learning an update. The project therefore retains raw outputs and separately audited scores, rather than relying only on an overall percentage."
+    "title": "What actually worked?",
+    "duration_seconds": 24.682857,
+    "narration": "Now for the results. Both retrieval methods got ten out of eleven answers right initially, and eleven out of eleven after the handbook was refreshed. Few shot got ten out of eleven on both matching versions. The first LoRA adapter got five out of eleven. The middle column shows the drop when old answers are judged against the new policy. The LoRA update is still pending, so that last cell isn't a completed result."
   },
   {
     "scene": 7,
-    "title": "Measured execution, preserved evidence",
-    "duration_seconds": 31.788163,
-    "narration": "The saved training log confirms a completed version one LoRA run: thirteen examples, twenty epochs, and about one hundred twenty four seconds of training on a Tesla T four. Peak allocated CUDA memory was about three point three six gibibytes. This is framework allocation, not total device memory. The repository preserves the training measurements, answers, scoring records, and report. Durable adapter backup still needs verification or recovery before continued training."
+    "title": "A real answer that stayed out of date",
+    "duration_seconds": 25.425896,
+    "narration": "Here's one example from the saved answer file. With the updated examples, few shot should answer forty five days for the refund window. It still says thirty. Looking at individual answers helped catch scoring issues too, including an old answer that only matched a new policy by coincidence. That's why I kept the original outputs and a separate audited result file. An accuracy number alone doesn't explain what went wrong."
   },
   {
     "scene": 8,
-    "title": "Finish the update experiment by Week 11",
-    "duration_seconds": 32.647302,
-    "narration": "The main finding is that refreshing retrieval recovered all changed facts in this setup, while the small LoRA training recipe learned fewer facts initially. These broad patterns have precedents in research; this project contributes its own controlled measurements and error analysis, not a proven new general discovery. Only eleven synthetic facts were evaluated. Week ten focuses on the version two LoRA update and retention of stable facts. Week eleven completes the comparison, limitations, and final report."
+    "title": "Completed runs, clear findings, one remaining update",
+    "duration_seconds": 27.678231,
+    "narration": "So the progress for these two weeks is concrete: comparable GPU baselines, a completed LoRA run, and an audited comparison backed by code and saved answers. Retrieval updated cleanly in this small test; the first LoRA recipe learned fewer facts. With only eleven synthetic facts, I can't claim a universal winner. Next, I'll update LoRA on version two and check both recovery and retention, then finish the project in Week eleven."
   }
 ]

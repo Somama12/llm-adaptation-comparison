@@ -1,171 +1,167 @@
 1
-00:00:00,000 --> 00:00:09,223
-This presentation introduces Somama Siddiqui’s Senior Seminar project: comparing ways to keep a language model accurate when factual information changes.
+00:00:00,000 --> 00:00:03,072
+Hi, here's my Week eight and nine update.
 
 2
-00:00:09,223 --> 00:00:16,140
-The project compares retrieval augmented generation, few shot prompting, and low rank adaptation, or LoRA.
+00:00:03,072 --> 00:00:10,369
+My project compares three ways to keep a language model current: retrieval, few shot prompting, and LoRA fine tuning.
 
 3
-00:00:16,140 --> 00:00:23,979
-The goal is to measure initial accuracy, errors caused by outdated knowledge, and recovery after an update.
+00:00:10,369 --> 00:00:17,666
+Over these two weeks, I ran the GPU baselines, completed the first LoRA training run, and audited the answers.
 
 4
-00:00:23,979 --> 00:00:29,513
-This walkthrough shows the implemented system and completed work through Week nine.
+00:00:17,666 --> 00:00:24,195
+Let's look at the actual repository, the code behind those runs, and what the results tell us.
 
 5
-00:00:29,513 --> 00:00:34,540
-The test domain is a synthetic cloud storage company called Nimbus.
+00:00:24,195 --> 00:00:27,344
+This is the baseline cell from my Colab notebook.
 
 6
-00:00:34,540 --> 00:00:36,825
-Its handbook has two versions.
+00:00:27,344 --> 00:00:35,042
+It calls the experiment runner with the Hugging Face backend and the same Qwen model for retrieval, few shot, and zero shot.
 
 7
-00:00:36,825 --> 00:00:41,852
-Eleven evaluated facts include five stable facts and six changed facts.
+00:00:35,042 --> 00:00:40,290
+That matters because changing the model between methods would make the comparison harder to interpret.
 
 8
-00:00:41,852 --> 00:00:47,335
-For example, the refund window changes from thirty to forty five days.
+00:00:40,290 --> 00:00:44,839
+The cell also checks that the run is complete before downloading the results.
 
 9
-00:00:47,335 --> 00:00:50,534
-The implementation also creates thirteen adaptation examples.
+00:00:44,839 --> 00:00:49,737
+These are saved GPU experiments, not a new training session running during this video.
 
 10
-00:00:50,534 --> 00:00:55,561
-Evaluation questions use different wording, but deliberately test the same facts.
+00:00:49,737 --> 00:00:51,278
+Here's the evaluation loop.
 
 11
-00:00:55,561 --> 00:01:01,045
-This measures factual learning and updating, rather than generalization to new facts.
+00:00:51,278 --> 00:00:55,130
+First, it retrieves a passage when the method needs one.
 
 12
-00:01:01,045 --> 00:01:09,301
-The repository contains two retrieval implementations, a few shot prompt builder, a shared evaluation pipeline, and CUDA LoRA training.
+00:00:55,130 --> 00:00:58,596
+Then it builds the prompt and generates an answer.
 
 13
-00:01:09,301 --> 00:01:13,211
-Retrieval supplies a relevant handbook passage at inference time.
+00:00:58,596 --> 00:01:03,989
+The important part is below: the same answer gets checked against both handbook versions.
 
 14
-00:01:13,211 --> 00:01:16,687
-Few shot prompting supplies question and answer examples.
+00:01:03,989 --> 00:01:12,078
+So I can measure what happens when yesterday's knowledge meets today's policy, without generating a different answer and changing the comparison.
 
 15
-00:01:16,687 --> 00:01:20,163
-LoRA updates a small set of model parameters.
+00:01:12,078 --> 00:01:15,929
+Each answer, expected value, and score is saved for inspection.
 
 16
-00:01:20,163 --> 00:01:32,764
-The Week eight and nine comparison uses the same Qwen two point five, three billion parameter model on a Tesla T four, keeping the earlier local Llama pilot separate.
+00:01:15,929 --> 00:01:18,797
+For Week nine, I ran this training code.
 
 17
-00:01:32,764 --> 00:01:38,735
-Here is an actual retrieval run using the repository’s T F I D F retriever.
+00:01:18,797 --> 00:01:25,608
+It loads the model in four bit precision and trains small LoRA adapters on the query and value projections.
 
 18
-00:01:38,735 --> 00:01:44,309
-The question asks how many days after purchase a customer can request a refund.
+00:01:25,608 --> 00:01:29,193
+The rank is sixteen, with twenty epochs and thirteen examples.
 
 19
-00:01:44,309 --> 00:01:47,892
-With version one, the retrieved section contains thirty days.
+00:01:29,193 --> 00:01:35,287
+The training setup was already implemented; this week's milestone was completing the run and evaluating its output.
 
 20
-00:01:47,892 --> 00:01:52,669
-Rebuilding retrieval with version two returns the updated forty five day policy.
+00:01:35,287 --> 00:01:42,098
+This is a deliberately small training budget, so a weak result here doesn't mean fine tuning can never work.
 
 21
-00:01:52,669 --> 00:01:57,048
-These passages were produced by running the code for this video.
+00:01:42,098 --> 00:01:45,062
+Here's the training log produced by that run.
 
 22
-00:01:57,048 --> 00:02:03,020
-This demonstrates retrieval; the language model results shown next come from the saved GPU experiments.
+00:01:45,062 --> 00:01:50,249
+It used a Tesla T four and took about one hundred twenty four seconds.
 
 23
-00:02:03,020 --> 00:02:12,538
-The audited results show both retrieval methods answering ten of eleven questions correctly with version one, and all eleven after refreshing to version two.
+00:01:50,249 --> 00:01:54,324
+Peak allocated GPU memory was about three point three six gibibytes.
 
 24
-00:02:12,538 --> 00:02:16,900
-Few shot prompting scores ten of eleven on each matching version.
+00:01:54,324 --> 00:01:58,399
+That's memory allocated by the framework, not the entire GPU footprint.
 
 25
-00:02:16,900 --> 00:02:20,470
-The version one LoRA adapter scores five of eleven.
+00:01:58,399 --> 00:02:01,734
+The log and evaluation answers are in the repository.
 
 26
-00:02:20,470 --> 00:02:23,643
-Its version two update is not yet complete.
+00:02:01,734 --> 00:02:06,920
+The adapter itself still needs a durable backup check before I continue training it.
 
 27
-00:02:23,643 --> 00:02:29,592
-The stale column re scores the original answers against changed truth, without generating new answers.
+00:02:06,920 --> 00:02:08,255
+Now for the results.
 
 28
-00:02:29,592 --> 00:02:32,764
-These are measurements from one small, controlled pilot.
+00:02:08,255 --> 00:02:15,259
+Both retrieval methods got ten out of eleven answers right initially, and eleven out of eleven after the handbook was refreshed.
 
 29
-00:02:32,764 --> 00:02:37,407
-One concrete failure appears in the saved version two few shot output.
+00:02:15,259 --> 00:02:18,928
+Few shot got ten out of eleven on both matching versions.
 
 30
-00:02:37,407 --> 00:02:43,210
-The expected refund window is forty five days, but the answer still says thirty days.
+00:02:18,928 --> 00:02:21,930
+The first LoRA adapter got five out of eleven.
 
 31
-00:02:43,210 --> 00:02:49,014
-Auditing individual answers also revealed that a stale answer can accidentally match a new policy.
+00:02:21,930 --> 00:02:26,934
+The middle column shows the drop when old answers are judged against the new policy.
 
 32
-00:02:49,014 --> 00:02:52,109
-That is not evidence of learning an update.
+00:02:26,934 --> 00:02:31,603
+The LoRA update is still pending, so that last cell isn't a completed result.
 
 33
-00:02:52,109 --> 00:02:59,073
-The project therefore retains raw outputs and separately audited scores, rather than relying only on an overall percentage.
+00:02:31,603 --> 00:02:34,509
+Here's one example from the saved answer file.
 
 34
-00:02:59,073 --> 00:03:12,242
-The saved training log confirms a completed version one LoRA run: thirteen examples, twenty epochs, and about one hundred twenty four seconds of training on a Tesla T four.
+00:02:34,509 --> 00:02:39,958
+With the updated examples, few shot should answer forty five days for the refund window.
 
 35
-00:03:12,242 --> 00:03:17,237
-Peak allocated CUDA memory was about three point three six gibibytes.
+00:02:39,958 --> 00:02:41,410
+It still says thirty.
 
 36
-00:03:17,237 --> 00:03:20,870
-This is framework allocation, not total device memory.
+00:02:41,410 --> 00:02:49,038
+Looking at individual answers helped catch scoring issues too, including an old answer that only matched a new policy by coincidence.
 
 37
-00:03:20,870 --> 00:03:25,865
-The repository preserves the training measurements, answers, scoring records, and report.
+00:02:49,038 --> 00:02:53,760
+That's why I kept the original outputs and a separate audited result file.
 
 38
-00:03:25,865 --> 00:03:30,861
-Durable adapter backup still needs verification or recovery before continued training.
+00:02:53,760 --> 00:02:57,029
+An accuracy number alone doesn't explain what went wrong.
 
 39
-00:03:30,861 --> 00:03:41,170
-The main finding is that refreshing retrieval recovered all changed facts in this setup, while the small LoRA training recipe learned fewer facts initially.
+00:02:57,029 --> 00:03:07,165
+So the progress for these two weeks is concrete: comparable GPU baselines, a completed LoRA run, and an audited comparison backed by code and saved answers.
 
 40
-00:03:41,170 --> 00:03:51,051
-These broad patterns have precedents in research; this project contributes its own controlled measurements and error analysis, not a proven new general discovery.
+00:03:07,165 --> 00:03:12,623
+Retrieval updated cleanly in this small test; the first LoRA recipe learned fewer facts.
 
 41
-00:03:51,051 --> 00:03:53,628
-Only eleven synthetic facts were evaluated.
+00:03:12,623 --> 00:03:16,911
+With only eleven synthetic facts, I can't claim a universal winner.
 
 42
-00:03:53,628 --> 00:03:59,642
-Week ten focuses on the version two LoRA update and retention of stable facts.
-
-43
-00:03:59,642 --> 00:04:03,508
-Week eleven completes the comparison, limitations, and final report.
+00:03:16,911 --> 00:03:24,707
+Next, I'll update LoRA on version two and check both recovery and retention, then finish the project in Week eleven.

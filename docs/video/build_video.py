@@ -3,7 +3,7 @@ Run with a Python containing Pillow. The repo .venv supplies sklearn for the
 fresh retrieval demonstration. GPU answers are replayed from saved results.
 """
 from pathlib import Path
-import json, subprocess, textwrap, re, sys
+import json, subprocess, textwrap, re, sys, hashlib
 from PIL import Image, ImageDraw, ImageFont
 REPO = Path(__file__).resolve().parents[2]
 OUT = Path(sys.argv[1]).resolve() if len(sys.argv)>1 else REPO/'docs/video/rendered'
@@ -32,22 +32,22 @@ if not refund:
  refund=[r for r in base['rows'] if r['method']=='fewshot' and r['knowledge_version']=='v2' and r['truth_version']=='v2' and not r['correct']]
 assert len(refund)==1
 scenes=[
-('The project question', 'LLM Adaptation Comparison',
- 'This presentation introduces Somama Siddiqui’s Senior Seminar project: comparing ways to keep a language model accurate when factual information changes. The project compares retrieval augmented generation, few shot prompting, and low rank adaptation, or LoRA. The goal is to measure initial accuracy, errors caused by outdated knowledge, and recovery after an update. This walkthrough shows the implemented system and completed work through Week nine.', 'intro'),
-('Experimental design', 'A controlled, changing handbook',
- 'The test domain is a synthetic cloud storage company called Nimbus. Its handbook has two versions. Eleven evaluated facts include five stable facts and six changed facts. For example, the refund window changes from thirty to forty five days. The implementation also creates thirteen adaptation examples. Evaluation questions use different wording, but deliberately test the same facts. This measures factual learning and updating, rather than generalization to new facts.', 'design'),
-('Implementation', 'Three ways to supply knowledge',
- 'The repository contains two retrieval implementations, a few shot prompt builder, a shared evaluation pipeline, and CUDA LoRA training. Retrieval supplies a relevant handbook passage at inference time. Few shot prompting supplies question and answer examples. LoRA updates a small set of model parameters. The Week eight and nine comparison uses the same Qwen two point five, three billion parameter model on a Tesla T four, keeping the earlier local Llama pilot separate.', 'architecture'),
-('Actual program demonstration', 'Run the retriever on both versions',
- 'Here is an actual retrieval run using the repository’s T F I D F retriever. The question asks how many days after purchase a customer can request a refund. With version one, the retrieved section contains thirty days. Rebuilding retrieval with version two returns the updated forty five day policy. These passages were produced by running the code for this video. This demonstrates retrieval; the language model results shown next come from the saved GPU experiments.', 'demo'),
-('Saved GPU results', 'What the completed experiments show',
- 'The audited results show both retrieval methods answering ten of eleven questions correctly with version one, and all eleven after refreshing to version two. Few shot prompting scores ten of eleven on each matching version. The version one LoRA adapter scores five of eleven. Its version two update is not yet complete. The stale column re scores the original answers against changed truth, without generating new answers. These are measurements from one small, controlled pilot.', 'results'),
-('Inspect an actual answer', 'An update can fail despite new examples',
- 'One concrete failure appears in the saved version two few shot output. The expected refund window is forty five days, but the answer still says thirty days. Auditing individual answers also revealed that a stale answer can accidentally match a new policy. That is not evidence of learning an update. The project therefore retains raw outputs and separately audited scores, rather than relying only on an overall percentage.', 'answer'),
-('Completed LoRA training', 'Measured execution, preserved evidence',
- 'The saved training log confirms a completed version one LoRA run: thirteen examples, twenty epochs, and about one hundred twenty four seconds of training on a Tesla T four. Peak allocated CUDA memory was about three point three six gibibytes. This is framework allocation, not total device memory. The repository preserves the training measurements, answers, scoring records, and report. Durable adapter backup still needs verification or recovery before continued training.', 'training'),
-('Interpretation and next steps', 'Finish the update experiment by Week 11',
- 'The main finding is that refreshing retrieval recovered all changed facts in this setup, while the small LoRA training recipe learned fewer facts initially. These broad patterns have precedents in research; this project contributes its own controlled measurements and error analysis, not a proven new general discovery. Only eleven synthetic facts were evaluated. Week ten focuses on the version two LoRA update and retention of stable facts. Week eleven completes the comparison, limitations, and final report.', 'closing')]
+('Week 8–9 update', 'From experiment code to measured results',
+ "Hi, here's my Week eight and nine update. My project compares three ways to keep a language model current: retrieval, few shot prompting, and LoRA fine tuning. Over these two weeks, I ran the GPU baselines, completed the first LoRA training run, and audited the answers. Let's look at the actual repository, the code behind those runs, and what the results tell us.", 'github'),
+('Week 8 • Colab execution', 'Run every baseline on the same model',
+ "This is the baseline cell from my Colab notebook. It calls the experiment runner with the Hugging Face backend and the same Qwen model for retrieval, few shot, and zero shot. That matters because changing the model between methods would make the comparison harder to interpret. The cell also checks that the run is complete before downloading the results. These are saved GPU experiments, not a new training session running during this video.", 'notebook'),
+('Week 8 • Evaluation code', 'Generate once, then check both versions',
+ "Here's the evaluation loop. First, it retrieves a passage when the method needs one. Then it builds the prompt and generates an answer. The important part is below: the same answer gets checked against both handbook versions. So I can measure what happens when yesterday's knowledge meets today's policy, without generating a different answer and changing the comparison. Each answer, expected value, and score is saved for inspection.", 'runner'),
+('Week 9 • Training code', 'The actual QLoRA configuration',
+ "For Week nine, I ran this training code. It loads the model in four bit precision and trains small LoRA adapters on the query and value projections. The rank is sixteen, with twenty epochs and thirteen examples. The training setup was already implemented; this week's milestone was completing the run and evaluating its output. This is a deliberately small training budget, so a weak result here doesn't mean fine tuning can never work.", 'traincode'),
+('Week 9 • Saved training log', 'The run finished, and the measurements are saved',
+ "Here's the training log produced by that run. It used a Tesla T four and took about one hundred twenty four seconds. Peak allocated GPU memory was about three point three six gibibytes. That's memory allocated by the framework, not the entire GPU footprint. The log and evaluation answers are in the repository. The adapter itself still needs a durable backup check before I continue training it.", 'training'),
+('Week 8–9 • Audited results', 'What actually worked?',
+ "Now for the results. Both retrieval methods got ten out of eleven answers right initially, and eleven out of eleven after the handbook was refreshed. Few shot got ten out of eleven on both matching versions. The first LoRA adapter got five out of eleven. The middle column shows the drop when old answers are judged against the new policy. The LoRA update is still pending, so that last cell isn't a completed result.", 'results'),
+('Week 8–9 • Inspect the evidence', 'A real answer that stayed out of date',
+ "Here's one example from the saved answer file. With the updated examples, few shot should answer forty five days for the refund window. It still says thirty. Looking at individual answers helped catch scoring issues too, including an old answer that only matched a new policy by coincidence. That's why I kept the original outputs and a separate audited result file. An accuracy number alone doesn't explain what went wrong.", 'answer'),
+('Week 8–9 • Takeaway', 'Completed runs, clear findings, one remaining update',
+ "So the progress for these two weeks is concrete: comparable GPU baselines, a completed LoRA run, and an audited comparison backed by code and saved answers. Retrieval updated cleanly in this small test; the first LoRA recipe learned fewer facts. With only eleven synthetic facts, I can't claim a universal winner. Next, I'll update LoRA on version two and check both recovery and retention, then finish the project in Week eleven.", 'closing')]
 fontdir=Path('/System/Library/Fonts/Supplemental')
 def font(n,b=False): return ImageFont.truetype(str(fontdir/('Arial Bold.ttf' if b else 'Arial.ttf')),n)
 NAVY='#101d32'; MUTED='#a7b9cf'; WHITE='#f3f7fc'; TEAL='#59dac4'; PANEL='#1a2b43'
@@ -63,13 +63,48 @@ def wrap(draw,text,x,y,width=1400,size=32,color=WHITE,b=False,gap=13):
  for line in lines: draw.text((x,y),line,font=f,fill=color); y+=size+gap
  return y
 
+def code_panel(draw, path, lines, startline=1):
+ draw.rounded_rectangle((55,215,1545,710),16,fill='#0b1422')
+ draw.text((80,230),path,font=font(25,True),fill=TEAL)
+ mono=ImageFont.truetype('/System/Library/Fonts/Menlo.ttc',21)
+ y=280
+ for number,line in enumerate(lines,startline):
+  parts=textwrap.wrap(line, width=105, replace_whitespace=False, drop_whitespace=False) or ['']
+  for j,part in enumerate(parts):
+   assert y+25<=708, (path,'code panel overflow')
+   draw.text((78,y),str(number) if j==0 else '↳',font=mono,fill='#75869c')
+   color='#8ce0cb' if part.lstrip().startswith('#') else '#e1e7ef'
+   draw.text((135,y),part,font=mono,fill=color)
+   y+=25
+
 def frame(index,kind):
  im=Image.new('RGB',(1600,900),NAVY);d=ImageDraw.Draw(im)
  d.rectangle((0,0,1600,9),fill=TEAL)
- d.text((70,40),'SOMAMA SIDDIQUI  /  SENIOR SEMINAR I  /  WEEKS 1–9',font=font(22),fill=MUTED)
+ d.text((70,40),'SOMAMA SIDDIQUI  /  SENIOR SEMINAR I  /  WEEKS 8–9',font=font(22),fill=MUTED)
  d.text((70,93),scenes[index][1],font=font(47,True),fill=WHITE)
  d.text((70,160),scenes[index][0].upper(),font=font(23,True),fill=TEAL)
- if kind=='intro':
+ if kind=='github':
+  shot=Image.open(REPO/'docs/video/assets/github.jpg').convert('RGB')
+  shot.thumbnail((790,500))
+  im.paste(shot,(70,210))
+  wrap(d,'WEEK 8',800,240,size=32,color=TEAL,b=True)
+  wrap(d,'Same-model GPU baselines\nSaved and audited answers',800,295,width=700,size=32)
+  wrap(d,'WEEK 9',800,420,size=32,color=TEAL,b=True)
+  wrap(d,'Version 1 LoRA training\nInitial and stale evaluation',800,475,width=700,size=32)
+  wrap(d,'Code + notebook + raw evidence on GitHub',800,625,width=700,size=25,color=MUTED)
+ elif kind=='notebook':
+  notebook=read('notebooks/colab_lora.ipynb')
+  cell=next(''.join(c['source']) for c in notebook['cells'] if c['cell_type']=='code' and "# Preserve the completed Week 8" in ''.join(c['source']))
+  code_panel(d,'notebooks/colab_lora.ipynb • Week 8 baseline cell',cell.splitlines())
+ elif kind=='runner':
+  lines=(REPO/'experiments/run.py').read_text().splitlines()
+  start=next(i for i,l in enumerate(lines) if 'retrieval_seconds = time.perf_counter()-start' in l)
+  code_panel(d,'experiments/run.py • generation and stale scoring',textwrap.dedent('\n'.join(lines[start:start+14])).splitlines(),start+1)
+ elif kind=='traincode':
+  lines=(REPO/'finetune/train.py').read_text().splitlines()
+  start=next(i for i,l in enumerate(lines) if 'model = AutoModelForCausalLM.from_pretrained' in l)
+  code_panel(d,'finetune/train.py • quantization and LoRA setup',textwrap.dedent('\n'.join(lines[start:start+10])).splitlines(),start+1)
+ elif kind=='intro':
   wrap(d,'How well do language models keep up\nwhen the facts change?',70,270,size=55,b=True)
   wrap(d,'RAG     •     Few-shot prompting     •     LoRA',70,470,size=35,color=TEAL)
   wrap(d,'Actual retrieval execution + saved GPU experiment walkthrough',70,565,size=28,color=MUTED)
@@ -136,8 +171,11 @@ def stamp(t):
 clips=[];image_lines=[];subtitles=[];elapsed=0;counter=1;manifest=[]
 for idx,(label,title,narration,kind) in enumerate(scenes):
  audio=OUT/f'scene_{idx+1:02}.aiff'
- if not audio.exists() or audio.stat().st_size <= 4096:
-  run(['say','-v','Samantha','-r','145','-o',str(audio),narration])
+ cache=audio.with_suffix('.sha256')
+ digest=hashlib.sha256(('Daniel|170|'+narration).encode()).hexdigest()
+ if not audio.exists() or audio.stat().st_size <= 4096 or not cache.exists() or cache.read_text()!=digest:
+  run(['say','-v','Daniel','-r','170','-o',str(audio),narration])
+  cache.write_text(digest)
  duration=probe(audio);clips.append(audio);baseframe=frame(idx,kind)
  baseframe.save(OUT/f'preview_{idx+1:02}.png')
  sentences=re.split(r'(?<=[.!?])\s+',narration)
@@ -157,8 +195,8 @@ image_lines.append(f"file '{path.name}'")
 (OUT/'audio.txt').write_text('\n'.join(f"file '{p.name}'" for p in clips)+'\n')
 (OUT/'captions.srt').write_text('\n'.join(subtitles))
 (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2))
-(OUT/'narration.md').write_text('# Week 1–9 project video narration\n\nSynthetic narration: macOS Samantha. GPU results are saved evidence; retrieval is executed afresh.\n\n'+'\n\n'.join(f'## {i+1}. {s[1]}\n\n{s[2]}' for i,s in enumerate(scenes)))
+(OUT/'narration.md').write_text('# Week 8–9 project video narration\n\nSynthetic narration: macOS Daniel, 170 words per minute. GPU results are saved evidence; displayed code is read directly from the repository.\n\n'+'\n\n'.join(f'## {i+1}. {s[1]}\n\n{s[2]}' for i,s in enumerate(scenes)))
 run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(OUT/'audio.txt'),'-c:a','aac','-b:a','128k',str(OUT/'narration.m4a')])
-run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(OUT/'frames.txt'),'-i',str(OUT/'narration.m4a'),'-i',str(OUT/'captions.srt'),'-map','0:v','-map','1:a','-map','2:s','-vf','fps=15','-c:v','libx264','-preset','fast','-crf','23','-pix_fmt','yuv420p','-c:a','copy','-c:s','mov_text','-metadata:s:s:0','language=eng','-movflags','+faststart','-t',str(elapsed),str(OUT/'week1_9_project_presentation.mp4')])
-assert 120<=probe(OUT/'week1_9_project_presentation.mp4')<=300
+run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(OUT/'frames.txt'),'-i',str(OUT/'narration.m4a'),'-i',str(OUT/'captions.srt'),'-map','0:v','-map','1:a','-map','2:s','-vf','fps=15','-c:v','libx264','-preset','fast','-crf','23','-pix_fmt','yuv420p','-c:a','copy','-c:s','mov_text','-metadata:s:s:0','language=eng','-movflags','+faststart','-t',str(elapsed),str(OUT/'week8_9_project_presentation.mp4')])
+assert 120<=probe(OUT/'week8_9_project_presentation.mp4')<=300
 print(f'Finished: {elapsed:.1f} seconds',flush=True)

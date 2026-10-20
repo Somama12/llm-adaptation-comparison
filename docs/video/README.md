@@ -1,30 +1,33 @@
-# Project presentation: work completed through Week 9
+# Week 8–9 project presentation
 
-The approximately **4-minute** video introduces the project and walks through actual repository evidence. It uses **synthetic narration (macOS Samantha)**, visible captions, and an embedded English subtitle track. The transcript is included for an optional personal voice recording.
+The **3-minute, 25-second** video focuses on Weeks 8 and 9. It uses a conversational script, the male **macOS Daniel voice at 170 words per minute**, visible captions, and an embedded English subtitle track.
 
-- [Video (MP4)](week1_9_project_presentation.mp4)
+- [Video (MP4)](week8_9_project_presentation.mp4)
 - [Narration script](narration.md)
 - [Captions](captions.srt)
-- [Fresh retrieval output used in the demonstration](retrieval_demo.json)
 - [Build script](build_video.py)
 
-## Demonstrated work
+## Walkthrough
 
-1. Research question and the Nimbus handbook versions.
-2. Implemented retrieval, few-shot, and LoRA architecture.
-3. A fresh execution of `rag.retriever.TfidfRetriever` against both versions, showing the refund policy changing from 30 to 45 days. This demonstrates retrieval, not a new GPU generation.
-4. A table computed directly from the completed, audited baseline and LoRA result files.
-5. A real incorrect few-shot answer from the saved results.
-6. The completed training log, study limitations, and Week 10–11 plan.
+1. Actual GitHub repository screenshot and Week 8–9 milestones.
+2. Actual baseline execution cell from `notebooks/colab_lora.ipynb`.
+3. Actual generation and stale-scoring code in `experiments/run.py`.
+4. Actual quantization and adapter configuration in `finetune/train.py`.
+5. Saved `results/training_v1.json` measurements.
+6. Audited results computed from the saved baseline and LoRA files.
+7. A real incorrect few-shot answer and the importance of auditing.
+8. Completed work, limitations, and the remaining update experiment.
 
-GPU training and model generation are **saved experiments**, not recorded live during video creation. The video does not claim that the Version 2 LoRA update is complete or that the pilot establishes a universal ranking. It is a rendered evidence walkthrough, not a camera recording or desktop screen capture.
+The code is read directly from repository files, with source line numbers for Python excerpts. Long lines are visually wrapped. The notebook line numbers are within its displayed cell. The GitHub image is an actual browser screenshot; other views are rendered code and evidence panels. GPU experiments are saved evidence, not a live rerun. The video explicitly distinguishes existing training implementation from the Week 9 completed execution. Narration is synthetic, not the student's recorded voice.
+
+The previous cumulative video is superseded by this Week 8–9 revision and remains available in Git history.
 
 ## Rebuild
 
-On macOS, install Pillow in the Python used to render the video and provide `ffmpeg`, `ffprobe`, and `say` on PATH. The repository's `.venv/bin/python` must have the local retrieval dependencies installed.
+On macOS, provide Pillow, `ffmpeg`, `ffprobe`, and `say`. The repository's `.venv/bin/python` must contain the local retrieval dependencies. The GitHub screenshot is included in `assets/github.jpg`.
 
 ```sh
-python docs/video/build_video.py /absolute/path/to/new-output-directory
+python docs/video/build_video.py /absolute/path/to/output-directory
 ```
 
-Use a new output directory after changing narration, because existing audio clips are reused. The build reads completed JSON results, executes retrieval, synthesizes narration, renders captions, and exports H.264/AAC MP4. Intermediate images and audio stay in the chosen build directory.
+Narration cache entries are keyed by text, voice, and speed. Intermediate images and audio stay in the chosen build directory. The output is H.264/AAC MP4.

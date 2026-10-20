@@ -1,35 +1,35 @@
-# Week 1–9 project video narration
+# Week 8–9 project video narration
 
-Synthetic narration: macOS Samantha. GPU results are saved evidence; retrieval is executed afresh.
+Synthetic narration: macOS Daniel, 170 words per minute. GPU results are saved evidence; displayed code is read directly from the repository.
 
-## 1. LLM Adaptation Comparison
+## 1. From experiment code to measured results
 
-This presentation introduces Somama Siddiqui’s Senior Seminar project: comparing ways to keep a language model accurate when factual information changes. The project compares retrieval augmented generation, few shot prompting, and low rank adaptation, or LoRA. The goal is to measure initial accuracy, errors caused by outdated knowledge, and recovery after an update. This walkthrough shows the implemented system and completed work through Week nine.
+Hi, here's my Week eight and nine update. My project compares three ways to keep a language model current: retrieval, few shot prompting, and LoRA fine tuning. Over these two weeks, I ran the GPU baselines, completed the first LoRA training run, and audited the answers. Let's look at the actual repository, the code behind those runs, and what the results tell us.
 
-## 2. A controlled, changing handbook
+## 2. Run every baseline on the same model
 
-The test domain is a synthetic cloud storage company called Nimbus. Its handbook has two versions. Eleven evaluated facts include five stable facts and six changed facts. For example, the refund window changes from thirty to forty five days. The implementation also creates thirteen adaptation examples. Evaluation questions use different wording, but deliberately test the same facts. This measures factual learning and updating, rather than generalization to new facts.
+This is the baseline cell from my Colab notebook. It calls the experiment runner with the Hugging Face backend and the same Qwen model for retrieval, few shot, and zero shot. That matters because changing the model between methods would make the comparison harder to interpret. The cell also checks that the run is complete before downloading the results. These are saved GPU experiments, not a new training session running during this video.
 
-## 3. Three ways to supply knowledge
+## 3. Generate once, then check both versions
 
-The repository contains two retrieval implementations, a few shot prompt builder, a shared evaluation pipeline, and CUDA LoRA training. Retrieval supplies a relevant handbook passage at inference time. Few shot prompting supplies question and answer examples. LoRA updates a small set of model parameters. The Week eight and nine comparison uses the same Qwen two point five, three billion parameter model on a Tesla T four, keeping the earlier local Llama pilot separate.
+Here's the evaluation loop. First, it retrieves a passage when the method needs one. Then it builds the prompt and generates an answer. The important part is below: the same answer gets checked against both handbook versions. So I can measure what happens when yesterday's knowledge meets today's policy, without generating a different answer and changing the comparison. Each answer, expected value, and score is saved for inspection.
 
-## 4. Run the retriever on both versions
+## 4. The actual QLoRA configuration
 
-Here is an actual retrieval run using the repository’s T F I D F retriever. The question asks how many days after purchase a customer can request a refund. With version one, the retrieved section contains thirty days. Rebuilding retrieval with version two returns the updated forty five day policy. These passages were produced by running the code for this video. This demonstrates retrieval; the language model results shown next come from the saved GPU experiments.
+For Week nine, I ran this training code. It loads the model in four bit precision and trains small LoRA adapters on the query and value projections. The rank is sixteen, with twenty epochs and thirteen examples. The training setup was already implemented; this week's milestone was completing the run and evaluating its output. This is a deliberately small training budget, so a weak result here doesn't mean fine tuning can never work.
 
-## 5. What the completed experiments show
+## 5. The run finished, and the measurements are saved
 
-The audited results show both retrieval methods answering ten of eleven questions correctly with version one, and all eleven after refreshing to version two. Few shot prompting scores ten of eleven on each matching version. The version one LoRA adapter scores five of eleven. Its version two update is not yet complete. The stale column re scores the original answers against changed truth, without generating new answers. These are measurements from one small, controlled pilot.
+Here's the training log produced by that run. It used a Tesla T four and took about one hundred twenty four seconds. Peak allocated GPU memory was about three point three six gibibytes. That's memory allocated by the framework, not the entire GPU footprint. The log and evaluation answers are in the repository. The adapter itself still needs a durable backup check before I continue training it.
 
-## 6. An update can fail despite new examples
+## 6. What actually worked?
 
-One concrete failure appears in the saved version two few shot output. The expected refund window is forty five days, but the answer still says thirty days. Auditing individual answers also revealed that a stale answer can accidentally match a new policy. That is not evidence of learning an update. The project therefore retains raw outputs and separately audited scores, rather than relying only on an overall percentage.
+Now for the results. Both retrieval methods got ten out of eleven answers right initially, and eleven out of eleven after the handbook was refreshed. Few shot got ten out of eleven on both matching versions. The first LoRA adapter got five out of eleven. The middle column shows the drop when old answers are judged against the new policy. The LoRA update is still pending, so that last cell isn't a completed result.
 
-## 7. Measured execution, preserved evidence
+## 7. A real answer that stayed out of date
 
-The saved training log confirms a completed version one LoRA run: thirteen examples, twenty epochs, and about one hundred twenty four seconds of training on a Tesla T four. Peak allocated CUDA memory was about three point three six gibibytes. This is framework allocation, not total device memory. The repository preserves the training measurements, answers, scoring records, and report. Durable adapter backup still needs verification or recovery before continued training.
+Here's one example from the saved answer file. With the updated examples, few shot should answer forty five days for the refund window. It still says thirty. Looking at individual answers helped catch scoring issues too, including an old answer that only matched a new policy by coincidence. That's why I kept the original outputs and a separate audited result file. An accuracy number alone doesn't explain what went wrong.
 
-## 8. Finish the update experiment by Week 11
+## 8. Completed runs, clear findings, one remaining update
 
-The main finding is that refreshing retrieval recovered all changed facts in this setup, while the small LoRA training recipe learned fewer facts initially. These broad patterns have precedents in research; this project contributes its own controlled measurements and error analysis, not a proven new general discovery. Only eleven synthetic facts were evaluated. Week ten focuses on the version two LoRA update and retention of stable facts. Week eleven completes the comparison, limitations, and final report.
+So the progress for these two weeks is concrete: comparable GPU baselines, a completed LoRA run, and an audited comparison backed by code and saved answers. Retrieval updated cleanly in this small test; the first LoRA recipe learned fewer facts. With only eleven synthetic facts, I can't claim a universal winner. Next, I'll update LoRA on version two and check both recovery and retention, then finish the project in Week eleven.
