@@ -16,6 +16,8 @@ A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** o
 
 The [Week 8–9 research report (PDF)](docs/reports/week8_9_research_update.pdf) and [LaTeX source](docs/reports/week8_9_research_update.tex) document the completed GPU experiments and the Week 10–11 plan.
 
+The [4-minute project presentation](docs/video/week1_9_project_presentation.mp4) demonstrates actual retrieval output and saved Week 8–9 results, with synthetic narration and captions. The [script and build instructions](docs/video/README.md) are included.
+
 ## Setup and local experiments
 
 Python 3.11 is recommended. Install Ollama from https://ollama.com/download and start its server.
