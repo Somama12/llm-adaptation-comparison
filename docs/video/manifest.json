@@ -1,0 +1,50 @@
+[
+  {
+    "scene": 1,
+    "title": "From experiment code to measured results",
+    "duration_seconds": 24.195238,
+    "narration": "Hi, here's my Week eight and nine update. My project compares three ways to keep a language model current: retrieval, few shot prompting, and LoRA fine tuning. Over these two weeks, I ran the GPU baselines, completed the first LoRA training run, and audited the answers. Let's look at the actual repository, the code behind those runs, and what the results tell us."
+  },
+  {
+    "scene": 2,
+    "title": "Run every baseline on the same model",
+    "duration_seconds": 25.541995,
+    "narration": "This is the baseline cell from my Colab notebook. It calls the experiment runner with the Hugging Face backend and the same Qwen model for retrieval, few shot, and zero shot. That matters because changing the model between methods would make the comparison harder to interpret. The cell also checks that the run is complete before downloading the results. These are saved GPU experiments, not a new training session running during this video."
+  },
+  {
+    "scene": 3,
+    "title": "Generate once, then check both versions",
+    "duration_seconds": 26.192154,
+    "narration": "Here's the evaluation loop. First, it retrieves a passage when the method needs one. Then it builds the prompt and generates an answer. The important part is below: the same answer gets checked against both handbook versions. So I can measure what happens when yesterday's knowledge meets today's policy, without generating a different answer and changing the comparison. Each answer, expected value, and score is saved for inspection."
+  },
+  {
+    "scene": 4,
+    "title": "The actual QLoRA configuration",
+    "duration_seconds": 26.168934,
+    "narration": "For Week nine, I ran this training code. It loads the model in four bit precision and trains small LoRA adapters on the query and value projections. The rank is sixteen, with twenty epochs and thirteen examples. The training setup was already implemented; this week's milestone was completing the run and evaluating its output. This is a deliberately small training budget, so a weak result here doesn't mean fine tuning can never work."
+  },
+  {
+    "scene": 5,
+    "title": "The run finished, and the measurements are saved",
+    "duration_seconds": 24.822177,
+    "narration": "Here's the training log produced by that run. It used a Tesla T four and took about one hundred twenty four seconds. Peak allocated GPU memory was about three point three six gibibytes. That's memory allocated by the framework, not the entire GPU footprint. The log and evaluation answers are in the repository. The adapter itself still needs a durable backup check before I continue training it."
+  },
+  {
+    "scene": 6,
+    "title": "What actually worked?",
+    "duration_seconds": 24.682857,
+    "narration": "Now for the results. Both retrieval methods got ten out of eleven answers right initially, and eleven out of eleven after the handbook was refreshed. Few shot got ten out of eleven on both matching versions. The first LoRA adapter got five out of eleven. The middle column shows the drop when old answers are judged against the new policy. The LoRA update is still pending, so that last cell isn't a completed result."
+  },
+  {
+    "scene": 7,
+    "title": "A real answer that stayed out of date",
+    "duration_seconds": 25.425896,
+    "narration": "Here's one example from the saved answer file. With the updated examples, few shot should answer forty five days for the refund window. It still says thirty. Looking at individual answers helped catch scoring issues too, including an old answer that only matched a new policy by coincidence. That's why I kept the original outputs and a separate audited result file. An accuracy number alone doesn't explain what went wrong."
+  },
+  {
+    "scene": 8,
+    "title": "Completed runs, clear findings, one remaining update",
+    "duration_seconds": 27.678231,
+    "narration": "So the progress for these two weeks is concrete: comparable GPU baselines, a completed LoRA run, and an audited comparison backed by code and saved answers. Retrieval updated cleanly in this small test; the first LoRA recipe learned fewer facts. With only eleven synthetic facts, I can't claim a universal winner. Next, I'll update LoRA on version two and check both recovery and retention, then finish the project in Week eleven."
+  }
+]

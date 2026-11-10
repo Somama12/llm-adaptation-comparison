@@ -2,6 +2,12 @@
 
 A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** on the synthetic Nimbus Cloud Storage handbook. The central variable is factual staleness: five evaluated facts stay constant and six change between two handbook versions.
 
+## Weeks 10–12 results
+
+[Research report (PDF)](docs/reports/week10_12.pdf) · [LaTeX source](docs/reports/week10_12.tex) · [Audited answer pairs](results/week12/pairs_audited.json)
+
+After the handbook update, LoRA gained two correct answers and lost two, leaving the audited total at 4/11. Refreshed retrieval scored 11/11 and few-shot prompting 10/11 in the earlier same-model baselines. The [retrieval audit](results/rank_audit.json) separately measures passage ranks under paraphrased questions.
+
 ## Implementation status
 
 - TF-IDF and MiniLM embedding retrieval, with the same retrieval interface.
@@ -12,7 +18,11 @@ A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** o
 - Colab notebook for GPU execution, with same-backend baselines.
 - Per-answer accuracy, retrieval matches, latency, token counts, index-build time, training time and peak CUDA allocation.
 
-**Weeks 8–9 experiments are complete:** same-model Qwen Colab baselines, Version 1 QLoRA training, and initial/stale evaluation are saved in `results/`. See [Week 8–9 evidence and remaining work](docs/WEEK8_9.md) and [detailed results](docs/week8_9_results.md). Version 2 continued training remains for Week 10. The earlier midterm notes describe the historical Weeks 1–7 state.
+**Weeks 8–9 experiments are complete:** same-model Qwen Colab baselines, Version 1 QLoRA training, and initial/stale evaluation are saved in `results/`. See [Week 8–9 evidence and remaining work](docs/WEEK8_9.md) and [detailed results](docs/week8_9_results.md). The subsequent Weeks 10–12 run completed Version 2 continued training. The earlier midterm notes describe the historical Weeks 1–7 state.
+
+The [Week 8–9 research report (PDF)](docs/reports/week8_9_research_update.pdf) and [LaTeX source](docs/reports/week8_9_research_update.tex) document the completed GPU experiments and the Week 10–11 plan.
+
+The [Week 8–9 video presentation](docs/video/week8_9_project_presentation.mp4) walks through GitHub, actual experiment and training code, and saved results in 3 minutes 25 seconds, with male synthetic narration and captions. The [script and build instructions](docs/video/README.md) are included.
 
 ## Setup and local experiments
 

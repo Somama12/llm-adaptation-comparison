@@ -1,0 +1,109 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[margin=0.85in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{microtype,booktabs,array,longtable,graphicx,tikz,xcolor,hyperref,fancyhdr,caption,enumitem}
+\usetikzlibrary{arrows.meta,positioning,fit}
+\definecolor{navy}{HTML}{15344B}
+\definecolor{teal}{HTML}{087E8B}
+\hypersetup{colorlinks=true,urlcolor=teal,linkcolor=navy,pdftitle={LLM Adaptation Comparison: Weeks 10--12 Research Progress Update},pdfauthor={Somama Siddiqui}}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{topsep=2pt,itemsep=2pt,leftmargin=1.4em}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small Senior Seminar I --- Research Progress Update}
+\fancyhead[R]{\small Weeks 10--12}\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{\vspace{-1.1em}\textbf{A Comparative Evaluation of Fine-Tuning, Few-Shot Prompting, and Retrieval-Augmented Generation for Domain-Specific Question Answering with Small Language Models}\\[0.4em]\large Research Progress Update: Weeks 10--12}
+\author{Somama Siddiqui\\Senior Seminar I \quad Instructor: Dr. Ning Zhang}
+\date{November 9, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+When a support policy changes, an assistant must learn the new rule without forgetting rules that still apply. A separate problem arises before generation: can the retriever find the right policy if a customer uses different words? After continued training, LoRA corrected the password-reset interval and backup-retention period but lost the two-factor authentication rule and Pro Plan capacity. Its audited total remained 4/11. A separate retrieval experiment tests sensitivity to wording on two versions of the Nimbus handbook. Character-based retrieval placed the target among its first three passages on ten of eleven paraphrases in both versions, compared with seven for whole-word matching.
+\end{abstract}
+\section{Project Overview}
+Nimbus is a fictional cloud-storage provider. Six of its eleven evaluated policies change between handbook versions and five remain stable. The project compares retrieving handbook passages (RAG), supplying worked examples (few-shot prompting), and adapting a language model with LoRA. The final comparison tracks what each method answers correctly before and after a policy update.
+\section{Work Completed: Weeks 10--12}
+\textbf{Implementation.} A new Python harness indexes the thirteen handbook sections with scikit-learn. It varies the matching unit (whole words or sequences of three to five characters within a word) and the indexed text (body alone or section title plus body). For each configuration it ranks every section, breaking ties by document order. It records the target's rank, the first result and its score. The original and paraphrased questions cover the same eleven facts.
+\begin{center}
+\fbox{Handbook sections}\ $\longrightarrow$\ \fbox{Four indexes}\ $\longrightarrow$\ \fbox{Rank passages}\ $\longrightarrow$\ \fbox{Inspect misses}
+\end{center}
+\begin{center}\small\begin{tabular}{lrr}\toprule Stage & Training time (s) & Peak allocated (GiB)\\\midrule Rebuild Version 1 & 128.2 & 3.36\\ Continue on Version 2 & 128.9 & 3.36\\\bottomrule\end{tabular}\end{center}
+\textbf{Testing.} The local run produced 176 question-level rankings: eleven facts times two wordings, two handbook versions and four configurations. The test suite passed all twelve checks, including two new tests for pairing by ID and rejecting duplicates. The report groups work by experiment; the new retrieval audit was executed November~9.
+\clearpage
+\section{Evidence of Progress}
+\subsection{Does retrieval survive a change in wording?}
+\begin{center}
+\begin{tabular}{lrrrr}\toprule
+ & \multicolumn{2}{c}{Version 1} & \multicolumn{2}{c}{Version 2}\\
+Paraphrased questions & Top 1 & Top 3 & Top 1 & Top 3\\\midrule
+Word, body only & 6/11 & 7/11 & 7/11 & 7/11\\
+Word, title and body & 6/11 & 7/11 & 7/11 & 7/11\\
+Character, body only & 8/11 & 10/11 & 8/11 & 10/11\\
+Character, title and body & 8/11 & 10/11 & 8/11 & 10/11\\\bottomrule
+\end{tabular}
+\end{center}
+All four indexes ranked the correct passage first for all eleven original questions in both handbooks. Rewording the questions exposed differences the original wording concealed. On Version~2, returning three character-matched passages instead of one brought two more target passages into view. Adding titles did not change aggregate hit counts.
+\textbf{Example.} For the interval between automatic snapshots for paying subscribers, the Version~2 word index gave every passage a score of zero. Document order placed the backup-frequency section seventh. The character index ranked it first. For the question about an entry-level subscription's capacity, the same change moved the Basic Plan section only from eleventh to ninth.
+\textbf{Interpretation.} These are retrieval hits, not generated answers. Passing more passages to a model could introduce distractors. The 176 records are repeated observations of eleven facts, not independent questions.
+
+\subsection{What changed after training on the updated handbook?}
+\begin{center}
+\begin{tabular}{lccc}\toprule
+Method & Original & Stale vs.\ new truth & Updated\\\midrule
+Word RAG & 10/11 & 6/11 & 11/11\\
+Embedding RAG & 10/11 & 6/11 & 11/11\\
+Few-shot & 10/11 & 5/11 & 10/11\\
+LoRA (paired run) & 5/11 & 4/11 & 4/11\\\bottomrule
+\end{tabular}
+\end{center}
+The first three rows are the audited Week~8 baselines; the last is the newly executed matched training sequence. The automatic scorer gave updated LoRA 5/11. It matched a requirement in the future tense in an answer that called two-factor authentication voluntary now. The handbook already requires it. Reviewing all eleven pairs corrected that score to 4/11. No Version~2 result is inferred from the older adapter. Scores credit the core policy fact; they do not certify the entire response.
+\clearpage
+\section{Progress Compared with the Plan}
+The Week~9 update scheduled continued LoRA training for Week~10 and synthesis for Week~11. The verified update and synthesis were completed for the extended Week~12 reporting period, later than the original target. The GPU run used Qwen~2.5~3B Instruct on a Tesla T4. It first rebuilt the Version~1 adapter, then loaded those weights for Version~2, preserving a matched starting point. Each stage used thirteen examples and twenty epochs. The base model, prompt pipeline and four-bit inference method were held fixed.
+\textbf{Training and evaluation.} The Colab notebook calls the Python training and evaluation modules in sequence. First it trains a rank-16 adapter on Version~1 and saves it. It then reloads that adapter as trainable and continues on Version~2, using completion-only loss in both stages. The two evaluations use the same questions and the same Qwen base model. The old answers are scored against the new truth without regeneration. Two regression tests check that the paired analysis tolerates reordered records and rejects a duplicate ID that would conceal a missing question.
+\section{Challenges and Solutions}
+\textbf{Checkpoint continuity.} The original adapter had no verified local backup. Rebuilding it meant the update had to be compared with its own freshly measured predecessor. Separate result directories preserve both generations of evidence. Runtime package versions and weight hashes identify this run.
+\textbf{Confusing a lucky answer with recovery.} An old answer can already match a new policy. The paired evaluation keeps the exact same Version~2 target on both sides and counts transitions per fact. On the six changed facts the count went from \textbf{1/6} to \textbf{2/6}; on the five stable facts it went from \textbf{3/5} to \textbf{2/5}.
+\begin{center}
+\begin{tabular}{lrrrr}\toprule
+Policy group & Gained & Lost & Stayed correct & Stayed incorrect\\\midrule
+Changed & 2 & 1 & 0 & 3\\
+Stable & 0 & 1 & 2 & 2\\\bottomrule
+\end{tabular}
+\end{center}
+\section{Current Status}
+The implementation now has measured original, stale and updated conditions for all three adaptation strategies. The Version~2 training step took 128.9 seconds and peaked at 3.36 GiB of allocated CUDA memory. The time excludes model loading and export. All conclusions apply to this small handbook and training budget: held-out wording is not the same as held-out facts.
+\section{Next Stage}
+The planned pilot is complete. A follow-up would preregister a larger set of changed policies, repeat training with multiple seeds and test whether including three passages improves generated answers as well as retrieval coverage. These extensions are outside the completed pilot.
+\clearpage\appendix
+\section{Reproduction and Evidence}
+\href{https://github.com/Somama12/llm-adaptation-comparison/tree/codex/midterm-experiments}{Project repository and experiment branch}. Run the Colab notebook on a T4. The paired logs and responses are in \path{results/week12/}; per-question passage ranks are in \path{results/rank_audit.json}.
+\begin{verbatim}
+python -m experiments.rank_audit
+python -m experiments.update_audit results/week12
+python -m pytest -q
+\end{verbatim}
+
+\subsection*{LoRA answer audit by fact}
+Both columns use Version~2 truth. A correct stale answer can reflect coincidence rather than adaptation; a missed target can reflect either the model or the limits of the matching rule. The full responses and audited decisions are in \path{results/week12/pairs_audited.json}.
+\begin{center}\small
+\begin{tabular}{P{0.22\linewidth}P{0.40\linewidth}ll}\toprule
+Policy & Version~2 reference & Stale & Updated\\\midrule
+VPN timeout & 8 hours & Miss & Miss\\
+Refund processing & 5 business days & Miss & Miss\\
+Backup frequency & Once every 24 hours & Correct & Correct\\
+Ticket escalation & 48 hours & Correct & Correct\\
+Pro Plan & 2 TB for \$12.99/month & Correct & Miss\\
+Password reset & 60 days & Miss & Correct\\
+Standard-account 2FA & Yes, it is now mandatory for all employee accounts & Correct & Miss\\
+Refund window & 45 days & Miss & Miss\\
+Backup retention & 90 days & Miss & Correct\\
+Priority response & 2 hours & Miss & Miss\\
+Basic Plan & 150 GB & Miss & Miss\\\bottomrule
+\end{tabular}\end{center}
+\subsection*{How to interpret the comparison}
+In the historical audited baselines, each RAG method moved five changed facts from incorrect to correct; the sixth already matched the new truth by coincidence. Few-shot prompting also corrected five but missed the sixth after the update. All three baselines kept their five stable answers correct. These transitions explain why matching totals alone do not describe recovery.
+\end{document}

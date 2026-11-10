@@ -1,0 +1,13 @@
+{
+  "versions": {
+    "torch": "2.14.1+cu130",
+    "peft": "0.21.2",
+    "transformers": "4.57.6",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.15.0"
+  },
+  "weights_sha256": {
+    "v1": "09f080ff9e25998a5a401558eec996bba8f12d9a10d549abf1306d428241ef3a",
+    "v2": "3db8a8d306d7c70e51dc0f446cad6f5184e5621433489c295c65180b3ba67375"
+  }
+}

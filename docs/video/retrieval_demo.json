@@ -1,0 +1,16 @@
+[
+  {
+    "version": "v1",
+    "question": "How many days after purchase can a customer request a refund?",
+    "section": "2.1 Standard Refund Window",
+    "passage": "Customers may request a full refund within **30 days** of purchase for any Nimbus storage plan, provided the account has not exceeded 10% of its storage quota.",
+    "similarity": 0.4833923156498991
+  },
+  {
+    "version": "v2",
+    "question": "How many days after purchase can a customer request a refund?",
+    "section": "2.1 Standard Refund Window",
+    "passage": "Customers may request a full refund within **45 days** of purchase for any Nimbus storage plan, provided the account has not exceeded 10% of its storage quota.",
+    "similarity": 0.47841230256015704
+  }
+]

@@ -1,0 +1,167 @@
+1
+00:00:00,000 --> 00:00:03,072
+Hi, here's my Week eight and nine update.
+
+2
+00:00:03,072 --> 00:00:10,369
+My project compares three ways to keep a language model current: retrieval, few shot prompting, and LoRA fine tuning.
+
+3
+00:00:10,369 --> 00:00:17,666
+Over these two weeks, I ran the GPU baselines, completed the first LoRA training run, and audited the answers.
+
+4
+00:00:17,666 --> 00:00:24,195
+Let's look at the actual repository, the code behind those runs, and what the results tell us.
+
+5
+00:00:24,195 --> 00:00:27,344
+This is the baseline cell from my Colab notebook.
+
+6
+00:00:27,344 --> 00:00:35,042
+It calls the experiment runner with the Hugging Face backend and the same Qwen model for retrieval, few shot, and zero shot.
+
+7
+00:00:35,042 --> 00:00:40,290
+That matters because changing the model between methods would make the comparison harder to interpret.
+
+8
+00:00:40,290 --> 00:00:44,839
+The cell also checks that the run is complete before downloading the results.
+
+9
+00:00:44,839 --> 00:00:49,737
+These are saved GPU experiments, not a new training session running during this video.
+
+10
+00:00:49,737 --> 00:00:51,278
+Here's the evaluation loop.
+
+11
+00:00:51,278 --> 00:00:55,130
+First, it retrieves a passage when the method needs one.
+
+12
+00:00:55,130 --> 00:00:58,596
+Then it builds the prompt and generates an answer.
+
+13
+00:00:58,596 --> 00:01:03,989
+The important part is below: the same answer gets checked against both handbook versions.
+
+14
+00:01:03,989 --> 00:01:12,078
+So I can measure what happens when yesterday's knowledge meets today's policy, without generating a different answer and changing the comparison.
+
+15
+00:01:12,078 --> 00:01:15,929
+Each answer, expected value, and score is saved for inspection.
+
+16
+00:01:15,929 --> 00:01:18,797
+For Week nine, I ran this training code.
+
+17
+00:01:18,797 --> 00:01:25,608
+It loads the model in four bit precision and trains small LoRA adapters on the query and value projections.
+
+18
+00:01:25,608 --> 00:01:29,193
+The rank is sixteen, with twenty epochs and thirteen examples.
+
+19
+00:01:29,193 --> 00:01:35,287
+The training setup was already implemented; this week's milestone was completing the run and evaluating its output.
+
+20
+00:01:35,287 --> 00:01:42,098
+This is a deliberately small training budget, so a weak result here doesn't mean fine tuning can never work.
+
+21
+00:01:42,098 --> 00:01:45,062
+Here's the training log produced by that run.
+
+22
+00:01:45,062 --> 00:01:50,249
+It used a Tesla T four and took about one hundred twenty four seconds.
+
+23
+00:01:50,249 --> 00:01:54,324
+Peak allocated GPU memory was about three point three six gibibytes.
+
+24
+00:01:54,324 --> 00:01:58,399
+That's memory allocated by the framework, not the entire GPU footprint.
+
+25
+00:01:58,399 --> 00:02:01,734
+The log and evaluation answers are in the repository.
+
+26
+00:02:01,734 --> 00:02:06,920
+The adapter itself still needs a durable backup check before I continue training it.
+
+27
+00:02:06,920 --> 00:02:08,255
+Now for the results.
+
+28
+00:02:08,255 --> 00:02:15,259
+Both retrieval methods got ten out of eleven answers right initially, and eleven out of eleven after the handbook was refreshed.
+
+29
+00:02:15,259 --> 00:02:18,928
+Few shot got ten out of eleven on both matching versions.
+
+30
+00:02:18,928 --> 00:02:21,930
+The first LoRA adapter got five out of eleven.
+
+31
+00:02:21,930 --> 00:02:26,934
+The middle column shows the drop when old answers are judged against the new policy.
+
+32
+00:02:26,934 --> 00:02:31,603
+The LoRA update is still pending, so that last cell isn't a completed result.
+
+33
+00:02:31,603 --> 00:02:34,509
+Here's one example from the saved answer file.
+
+34
+00:02:34,509 --> 00:02:39,958
+With the updated examples, few shot should answer forty five days for the refund window.
+
+35
+00:02:39,958 --> 00:02:41,410
+It still says thirty.
+
+36
+00:02:41,410 --> 00:02:49,038
+Looking at individual answers helped catch scoring issues too, including an old answer that only matched a new policy by coincidence.
+
+37
+00:02:49,038 --> 00:02:53,760
+That's why I kept the original outputs and a separate audited result file.
+
+38
+00:02:53,760 --> 00:02:57,029
+An accuracy number alone doesn't explain what went wrong.
+
+39
+00:02:57,029 --> 00:03:07,165
+So the progress for these two weeks is concrete: comparable GPU baselines, a completed LoRA run, and an audited comparison backed by code and saved answers.
+
+40
+00:03:07,165 --> 00:03:12,623
+Retrieval updated cleanly in this small test; the first LoRA recipe learned fewer facts.
+
+41
+00:03:12,623 --> 00:03:16,911
+With only eleven synthetic facts, I can't claim a universal winner.
+
+42
+00:03:16,911 --> 00:03:24,707
+Next, I'll update LoRA on version two and check both recovery and retention, then finish the project in Week eleven.

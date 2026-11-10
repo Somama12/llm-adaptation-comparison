@@ -1,0 +1,112 @@
+[
+  {
+    "id": "stable_1",
+    "category": "stable",
+    "question": "How long is the VPN session timeout before re-authentication?",
+    "expected": "8 hours",
+    "before": "Unauthenticated VPN sessions expire in **5 minutes**, requiring automatic re-authentication after 3 minutes. Authenticated sessions have no automatic expiration time.",
+    "after": "VPN sessions automatically require re-authentication after **24 hours** of inactivity.",
+    "stale": false,
+    "updated": false
+  },
+  {
+    "id": "stable_2",
+    "category": "stable",
+    "question": "How many business days does it take to process an approved refund?",
+    "expected": "5 business days",
+    "before": "Refunds for disputed transactions are processed within **4 business days**.",
+    "after": "Approved refunds**typically** occur within **7 business days** of approval.",
+    "stale": false,
+    "updated": false
+  },
+  {
+    "id": "stable_3",
+    "category": "stable",
+    "question": "How often are automated backups performed for paid-tier accounts?",
+    "expected": "Once every 24 hours",
+    "before": "Automated backups are performed **every 24 hours** for all paid-tier Nimbus Cloud Storage plans.",
+    "after": "Automated backups are performed **every 24 hours** for all account tiers, though paid-tier accounts receive additional frequent snapshots for enhanced security.",
+    "stale": true,
+    "updated": true
+  },
+  {
+    "id": "stable_4",
+    "category": "stable",
+    "question": "How long after ticket submission are unresolved tickets escalated to Tier 2?",
+    "expected": "48 hours",
+    "before": "Unresolved tickets are automatically escalated to Tier 2 support within **48 hours** of initial submission.",
+    "after": "Unresolved tickets are automatically escalated to Tier 2 support within **48 hours** of initial submission.",
+    "stale": true,
+    "updated": true
+  },
+  {
+    "id": "stable_5",
+    "category": "stable",
+    "question": "How much storage does the Pro Plan include and at what price?",
+    "expected": "2 TB for $12.99/month",
+    "before": "The Pro Plan includes **2 TB** of storage for **$12.99/month**.",
+    "after": "The Pro Plan includes **4 TB** of storage for **$12.99/month**.",
+    "stale": true,
+    "updated": false
+  },
+  {
+    "id": "changed_1",
+    "category": "changed",
+    "question": "How often must employee passwords be reset?",
+    "expected": "60 days",
+    "before": "Employee passwords must be reset every **12 months** according to the company's security policies.",
+    "after": "Employee password resets are mandatory every **60 days**.",
+    "stale": false,
+    "updated": true
+  },
+  {
+    "id": "changed_2",
+    "category": "changed",
+    "question": "Is two-factor authentication mandatory for standard employee accounts?",
+    "expected": "Yes, it is now mandatory for all employee accounts",
+    "before": "Yes, all standard employee accounts must use **SMS-based Two-Factor Authentication (2FA)** for additional security. SMS 2FA requires employees to receive a one-time code sent to their mobile phone via text message\u9a8c\u8bc1\u7801\u6bcf\u540d\u5458\u5de5\u6807\u51c6\u8d26\u6237\u5fc5\u987b\u542f\u7528\u53cc\u91cd\u8ba4\u8bc1\u4ee5\u589e\u5f3a\u5b89\u5168\u6027\u3002\u53cc\u91cd\u8ba4\u8bc1\u8981\u6c42\u4f7f\u7528**\u77ed\u4fe1\u9a8c\u8bc1\uff08SMS Two-Factor Authentication\uff09**\uff0c\u9ed8\u8ba4\u4e3aSMS 2FA\u3002SMS 2FA \u9700\u8981\u5458\u5de5\u63d0\u4f9b\u624b\u673a\u6536\u5230\u7684\u52a8\u6001\u9a8c\u8bc1\u7801\u6765",
+    "after": "Two-factor authentication (2FA) is **voluntary** for standard employee accounts but will be **required** starting in Q1 2023.",
+    "stale": true,
+    "updated": true
+  },
+  {
+    "id": "changed_3",
+    "category": "changed",
+    "question": "Within how many days of purchase can a customer request a full refund?",
+    "expected": "45 days",
+    "before": "Customers may request a full refund within **30 days** of purchase for any Nimbus storage plan.",
+    "after": "Customers may request a full refund within **30 days** of purchase for any Nimbus storage plan.",
+    "stale": false,
+    "updated": false
+  },
+  {
+    "id": "changed_4",
+    "category": "changed",
+    "question": "How long are customer data backups retained after account deletion?",
+    "expected": "90 days",
+    "before": "Customer data backups are retained **30 days** after an account deletion before being permanently deleted from Nimbus servers.",
+    "after": "Customer data backups are retained for **90 days** after an account deletion before being permanently purged from Nimbus servers.",
+    "stale": false,
+    "updated": true
+  },
+  {
+    "id": "changed_5",
+    "category": "changed",
+    "question": "What is the initial support response time for priority-tier customers?",
+    "expected": "2 hours",
+    "before": "Priority-tier customers receive initial support responses within **24 hours** of ticket submission.",
+    "after": "Priority-tier customers receive support within **24 hours** of ticket submission, compared to a **48-hour** standard-tier response time.",
+    "stale": false,
+    "updated": false
+  },
+  {
+    "id": "changed_6",
+    "category": "changed",
+    "question": "How much storage does the Basic Plan include?",
+    "expected": "150 GB",
+    "before": "The Basic Plan includes **2 GB** of cloud storage for the first year at no additional cost with a paid plan upgrade.",
+    "after": "The Basic plan includes **15 GB** of storage for the first 2 months, after which the client is offered **4 GB/month per GB paid** for additional storage for $0.10/GB/month.",
+    "stale": false,
+    "updated": false
+  }
+]
