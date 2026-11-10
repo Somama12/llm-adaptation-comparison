@@ -1,0 +1,313 @@
+1
+00:00:00,000 --> 00:00:04,181
+Suppose a customer asks for a refund thirty-five days after purchase.
+
+2
+00:00:04,181 --> 00:00:06,842
+Yesterday that was outside the refund window.
+
+3
+00:00:06,842 --> 00:00:11,404
+Today, they're eligible for forty-five days, subject to the handbook's
+usage limit.
+
+4
+00:00:11,404 --> 00:00:15,585
+How do you get a support assistant to change its answer?
+
+5
+00:00:15,585 --> 00:00:23,568
+This is LLM Adaptation Comparison: a Python project that tests three
+ways to update the knowledge of a small language model.
+
+6
+00:00:23,583 --> 00:00:26,038
+Here's the design in the README.
+
+7
+00:00:26,038 --> 00:00:28,084
+Retrieval supplies a handbook passage.
+
+8
+00:00:28,084 --> 00:00:30,130
+Few-shot prompting supplies worked examples.
+
+9
+00:00:30,130 --> 00:00:35,040
+LoRA updates a small set of weights using PyTorch and Hugging Face.
+
+10
+00:00:35,040 --> 00:00:38,723
+All three methods answer the same eleven policy questions.
+
+11
+00:00:38,750 --> 00:00:41,413
+Here are the files behind that comparison.
+
+12
+00:00:41,413 --> 00:00:48,259
+Data holds the handbooks, rag contains the retrievers, and experiments
+contains the prompts, model backends, and evaluation code.
+
+13
+00:00:48,259 --> 00:00:54,725
+Open run dot py and you can trace one question all the way to a scored
+answer.
+
+14
+00:00:54,750 --> 00:00:57,074
+Notice the order of these lines.
+
+15
+00:00:57,074 --> 00:01:01,722
+The runner retrieves the passage, builds the prompt, and generates one
+answer.
+
+16
+00:01:01,722 --> 00:01:05,596
+Then it scores that same answer against both handbook versions.
+
+17
+00:01:05,596 --> 00:01:11,793
+That's how the stale column measures yesterday's answer against today's
+policy, without asking the model again.
+
+18
+00:01:11,833 --> 00:01:14,050
+Now we’re in the project itself.
+
+19
+00:01:14,050 --> 00:01:22,177
+The retriever fits a word index over handbook sections, transforms a
+question into that same vocabulary, and ranks passages by cosine
+similarity.
+
+20
+00:01:22,177 --> 00:01:27,349
+The demo function takes the highest-ranked passage and passes its text
+to the model.
+
+21
+00:01:27,349 --> 00:01:31,781
+Notice that version one and version two each get their own index.
+
+22
+00:01:31,781 --> 00:01:36,214
+Mixing those passages would defeat the purpose of testing a policy
+change.
+
+23
+00:01:36,250 --> 00:01:40,305
+Before using the model, let’s test the code behind those measurements.
+
+24
+00:01:40,305 --> 00:01:44,361
+This is the repository’s pytest suite running in the integrated
+terminal.
+
+25
+00:01:44,361 --> 00:01:51,365
+One test changes the order of the saved answers; the comparison still
+has to match them by question identifier.
+
+26
+00:01:51,365 --> 00:01:55,052
+Another introduces a duplicate that would hide a missing question.
+
+27
+00:01:55,052 --> 00:01:56,895
+That case must be rejected.
+
+28
+00:01:56,895 --> 00:02:00,213
+Here the tests finish and the process exits successfully.
+
+29
+00:02:00,250 --> 00:02:03,122
+This is the training path used on Colab.
+
+30
+00:02:03,122 --> 00:02:05,276
+The model loads in four-bit precision.
+
+31
+00:02:05,276 --> 00:02:10,661
+For the first run, the code adds LoRA weights to the query and value
+projections.
+
+32
+00:02:10,661 --> 00:02:16,406
+For the update, it loads the existing adapter as trainable and continues
+on the revised examples.
+
+33
+00:02:16,406 --> 00:02:21,073
+The paired evaluation then compares the two checkpoints against the same
+new targets.
+
+34
+00:02:21,073 --> 00:02:23,586
+We’ll inspect those saved GPU answers shortly.
+
+35
+00:02:23,667 --> 00:02:25,923
+Here’s the refund question running locally.
+
+36
+00:02:25,923 --> 00:02:31,564
+The command asks how many days after purchase a customer can request a
+full refund.
+
+37
+00:02:31,564 --> 00:02:33,821
+First, watch which section comes back.
+
+38
+00:02:33,821 --> 00:02:38,709
+Version one retrieves the standard refund window, and its passage says
+thirty days.
+
+39
+00:02:38,709 --> 00:02:40,590
+The model answers thirty days.
+
+40
+00:02:40,590 --> 00:02:46,231
+Now the program rebuilds the index from version two and asks exactly the
+same question.
+
+41
+00:02:46,231 --> 00:02:51,496
+This time the updated passage says forty-five days, and the answer
+changes to forty-five.
+
+42
+00:02:51,496 --> 00:02:54,880
+This is live inference with the local Llama model.
+
+43
+00:02:54,880 --> 00:03:00,145
+The controlled comparison uses Qwen on a T four GPU; those are separate
+runs.
+
+44
+00:03:00,167 --> 00:03:04,344
+A model can’t use a policy that its retriever never finds.
+
+45
+00:03:04,344 --> 00:03:07,382
+Here the ranking harness reruns the paraphrased questions.
+
+46
+00:03:07,382 --> 00:03:12,319
+In the last two columns, top one means the right passage came first.
+
+47
+00:03:12,319 --> 00:03:16,117
+Top three means it was somewhere in the first three.
+
+48
+00:03:16,117 --> 00:03:21,054
+On version two, whole-word matching found seven of eleven within the top
+three.
+
+49
+00:03:21,054 --> 00:03:22,953
+Short character sequences found ten.
+
+50
+00:03:22,953 --> 00:03:25,991
+Adding the section title didn’t change those counts.
+
+51
+00:03:25,991 --> 00:03:29,029
+This measures access to evidence, not answer correctness.
+
+52
+00:03:29,083 --> 00:03:31,947
+Now look at the saved two-factor authentication answer.
+
+53
+00:03:31,947 --> 00:03:34,095
+The updated handbook requires it now.
+
+54
+00:03:34,095 --> 00:03:37,316
+The model calls it voluntary now and required later.
+
+55
+00:03:37,316 --> 00:03:40,896
+A keyword check saw the word required and awarded credit.
+
+56
+00:03:40,896 --> 00:03:43,401
+Reading the whole sentence reverses that decision.
+
+57
+00:03:43,401 --> 00:03:48,770
+That one correction takes the updated LoRA score from five out of eleven
+to four.
+
+58
+00:03:48,770 --> 00:03:52,350
+The original output and the review decision are both preserved.
+
+59
+00:03:52,417 --> 00:03:56,322
+These rows pair each answer before and after continued training.
+
+60
+00:03:56,322 --> 00:03:59,837
+LoRA learned the new password-reset interval and backup-retention
+period.
+
+61
+00:03:59,837 --> 00:04:04,913
+It lost the two-factor rule and an unchanged fact, the Pro Plan
+capacity.
+
+62
+00:04:04,913 --> 00:04:09,209
+So the total stayed flat, even though four individual outcomes changed.
+
+63
+00:04:09,209 --> 00:04:18,191
+The two training stages each used thirteen examples and twenty epochs;
+the update took about one hundred twenty-nine seconds on the T four.
+
+64
+00:04:18,250 --> 00:04:19,828
+Here’s the final comparison.
+
+65
+00:04:19,828 --> 00:04:24,167
+With updated knowledge, both retrieval methods got eleven of eleven
+correct.
+
+66
+00:04:24,167 --> 00:04:25,745
+Few-shot prompting got ten.
+
+67
+00:04:25,745 --> 00:04:27,717
+LoRA got four after review.
+
+68
+00:04:27,717 --> 00:04:34,422
+For this small handbook, replacing the retrieval source was the most
+reliable way to keep answers current.
+
+69
+00:04:34,422 --> 00:04:39,550
+Eleven synthetic facts and one matched training run don’t establish a
+universal winner.
+
+70
+00:04:39,550 --> 00:04:45,073
+The next useful test is a larger set of policies and repeated training
+runs.
+
+71
+00:04:45,073 --> 00:04:49,806
+The code, raw answers, and report are all available alongside these
+results.

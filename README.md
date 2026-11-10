@@ -2,6 +2,18 @@
 
 A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** on the synthetic Nimbus Cloud Storage handbook. The central variable is factual staleness: five evaluated facts stay constant and six change between two handbook versions.
 
+## Final project demonstration
+
+[Watch the 1080p code and inference walkthrough](docs/video/final/nimbus_final_demo.mp4) · [Chapters, narration and captions](docs/video/final/README.md)
+
+The demo runs the regression suite, asks the same refund question against both handbooks using local Ollama, and inspects the saved GPU experiment. With the project environment active and the local model server running:
+
+    python -m experiments.demo ask "Within how many days of purchase can a customer request a full refund?"
+    python -m experiments.demo compare
+    python -m experiments.demo inspect --id changed_2
+
+Only the first command requires Ollama and its cached Llama model. Use the optional URL flag for a non-default local server.
+
 ## Weeks 10–12 results
 
 [Research report (PDF)](docs/reports/week10_12.pdf) · [LaTeX source](docs/reports/week10_12.tex) · [Audited answer pairs](results/week12/pairs_audited.json)
