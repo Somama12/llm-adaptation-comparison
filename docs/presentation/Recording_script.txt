@@ -1,0 +1,78 @@
+NIMBUS  /  RECORDING SCRIPT
+About 4 minutes. Read the paragraphs aloud. Bracketed cues are for you only.
+
+SLIDE 1  |  0:00–0:30  |  LLM Adaptation Comparison
+[Start on the title slide.]
+
+Imagine a customer asks for a refund thirty-five days after buying a storage plan.
+Under the old handbook, they’re too late. Under the new one, they’re within the
+refund window. The customer asks exactly the same question, but the correct answer
+has changed. I’m Somama Siddiqui, and my project tests three ways to keep a small
+language model current when a policy changes.
+
+SLIDE 2  |  0:30–1:10  |  Three ways to give the model the policy
+[Show the repository image or briefly open GitHub. Point to the experiments and
+finetune folders.]
+
+This is the Nimbus project repository. I created two versions of a fictional
+handbook so I could control which facts changed. Six changed and five stayed the
+same. Retrieval gives the model a relevant passage with its question. Few-shot
+prompting gives it examples in the prompt. LoRA trains a small set of extra
+weights. The Python runner scores the original answer twice: once against the old
+handbook and once against the new one. That second score tells us exactly how
+stale the old answer became.
+
+SLIDE 3  |  1:10–1:50  |  Same question, different handbook
+[Point to each MODEL ANSWER line. Optional live run: python -m experiments.demo
+ask (start Ollama with llama3.2:3b first).]
+
+Here’s the refund question running locally in VS Code. The code retrieves a
+section, adds its text to the prompt, and calls the model. Version one returns the
+standard refund policy, and the model answers thirty days. With the updated
+handbook, it finds the revised passage and answers forty-five days. Nothing about
+the question changed. This screenshot is from the actual Llama run on my Mac. For
+the scored comparison, I used the same Qwen model across all three methods on a
+Colab T4.
+
+SLIDE 4  |  1:50–2:30  |  How many answers stayed correct?
+[Read across the retrieval row, then compare the last column. All counts are out
+of eleven.]
+
+Read this table from left to right. Original means the method used the first
+handbook. Stale means yesterday’s answers were judged against today’s policy.
+Updated means the method received the new information. Both retrieval methods went
+from six correct stale answers to eleven after the refresh. Few-shot prompting
+reached ten. LoRA stayed at four after review. The first three rows come from the
+earlier same-model baselines; the LoRA row uses the matched run where I rebuilt
+the first adapter and continued training it on version two.
+
+SLIDE 5  |  2:30–3:10  |  Four correct before. Four correct after.
+[Point to the gains and losses. Pause on the two-factor authentication example.]
+
+That flat total hides the most interesting result. The updated adapter learned
+that passwords must be reset every sixty days and that deleted-account backups are
+retained for ninety days. But it lost the correct Pro Plan capacity and the two-
+factor authentication rule. The updated answer said authentication was voluntary
+now and required later. The automatic scorer saw the word required and gave it
+credit. Checking the full sentence against the policy brought the updated score
+down from five to four. I kept both decisions so the correction can be checked.
+
+SLIDE 6  |  3:10–3:45  |  Rewording a question can hide the right passage
+[Emphasize that these numbers measure passage retrieval, not generated answers.]
+
+I also tested what happens when a customer uses different words from the handbook.
+On the original questions, every lexical configuration found the correct section
+first. Paraphrases exposed a difference. On version two, whole-word matching
+placed the right section in the top three for seven questions. Matching short
+character sequences did it for ten. That result tells us the evidence was easier
+to find. It doesn’t tell us that a model would read the passage correctly.
+
+SLIDE 7  |  3:45–4:15  |  For Nimbus, refreshing retrieval worked best
+[Finish here. If time allows, show the report or the audited answer file on GitHub.]
+
+For this handbook, refreshing the retrieval source was the most reliable way to
+keep answers current. The important lesson is to inspect which facts changed, not
+just the total score. This is one small experiment with eleven synthetic facts and
+one matched training run. I’d test a larger set of policies and repeat the
+training before drawing a broader conclusion. The code, raw answers, audit, and
+research report are all in the repository.
