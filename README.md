@@ -2,6 +2,21 @@
 
 A controlled pilot comparing **RAG, few-shot prompting, and LoRA fine-tuning** on the synthetic Nimbus Cloud Storage handbook. The central variable is factual staleness: five evaluated facts stay constant and six change between two handbook versions.
 
+## Project status
+
+The planned Weeks 1–12 pilot is complete: implementation, original/stale/updated evaluations, paired LoRA analysis, retrieval robustness analysis, and reporting artifacts are available here. Larger datasets and repeated training seeds are future research.
+
+The final published comparison uses Qwen 2.5 3B with the same NF4 inference backend. Each condition evaluates eleven policy facts.
+
+| Method | Original policy | Stale answers vs. new policy | Updated policy |
+|---|---:|---:|---:|
+| TF-IDF RAG | 10/11 | 6/11 | 11/11 |
+| MiniLM RAG | 10/11 | 6/11 | 11/11 |
+| Few-shot prompting | 10/11 | 5/11 | 10/11 |
+| LoRA, matched training sequence | 5/11 | 4/11 | 4/11 |
+
+These are audited core-fact scores. Baselines come from the Week 8 study; the LoRA row comes from the matched Week 12 sequence. The automatic updated-LoRA score was 5/11; answer review corrected it to 4/11. Raw files and audit explanations remain preserved.
+
 ## Start here
 
 - [Reproduce the project and export/reload adapters](docs/REPRODUCIBILITY.md)
@@ -52,7 +67,7 @@ After the handbook update, LoRA gained two correct answers and lost two, leaving
 - Colab notebook for GPU execution, with same-backend baselines.
 - Per-answer accuracy, retrieval matches, latency, token counts, index-build time, training time and peak CUDA allocation.
 
-**Weeks 8–9 experiments are complete:** same-model Qwen Colab baselines, Version 1 QLoRA training, and initial/stale evaluation are saved in `results/`. See [Week 8–9 evidence and remaining work](docs/WEEK8_9.md) and [detailed results](docs/week8_9_results.md). The subsequent Weeks 10–12 run completed Version 2 continued training. The earlier midterm notes describe the historical Weeks 1–7 state.
+**Weeks 8–9 experiments are complete:** same-model Qwen Colab baselines, Version 1 QLoRA training, and initial/stale evaluation are saved in `results/`. See [Historical Week 8–9 milestone notes](docs/WEEK8_9.md) and [detailed results](docs/week8_9_results.md). The subsequent Weeks 10–12 run completed Version 2 continued training. The earlier midterm notes describe the historical Weeks 1–7 state.
 
 The [Week 8–9 research report (PDF)](docs/reports/week8_9_research_update.pdf) and [LaTeX source](docs/reports/week8_9_research_update.tex) document the completed GPU experiments and the Week 10–11 plan.
 
@@ -79,7 +94,7 @@ For this workspace, a portable Ollama binary is in ignored `.tools/`. Start it w
 
 ## Colab: LoRA and comparable baselines
 
-[Open the GPU notebook](https://colab.research.google.com/github/Somama12/llm-adaptation-comparison/blob/codex/midterm-experiments/notebooks/colab_lora.ipynb).
+[Open the GPU notebook](https://colab.research.google.com/github/Somama12/llm-adaptation-comparison/blob/main/notebooks/colab_lora.ipynb).
 
 Choose a T4 GPU runtime. The notebook uses the accessible `Qwen/Qwen2.5-3B-Instruct` checkpoint for every Colab condition. The originally planned `meta-llama/Llama-3.2-3B-Instruct` checkpoint remained gated for the project account, so this is a documented model change. The local Ollama/Llama pilot remains useful for its own staleness study; compare methods within the Colab/Qwen run for the controlled three-way result. The notebook:
 
@@ -105,7 +120,7 @@ Scoring is a conservative, task-specific factual heuristic, not a semantic LLM j
 
 ### Correction to the Report 1 score
 
-The historical `results/retrieval_eval_results.json` remains unchanged for traceability. Its 1/6 stale changed-fact score was a false positive: the old checker matched “mandatory” in the v1 passage about **admin** accounts while evaluating **standard** accounts. Corrected scoring gives **0/6**. Both old and new code retrieve the relevant section; this was an answer-scoring error. State this correction explicitly in the midterm rather than presenting the old 17% as a real success rate.
+The historical `results/retrieval_eval_results.json` remains unchanged for traceability. Its 1/6 stale changed-fact score was a false positive: the old checker matched “mandatory” in the v1 passage about **admin** accounts while evaluating **standard** accounts. Corrected scoring gives **0/6**. Both old and new code retrieve the relevant section; this was an answer-scoring error. The historical 17% must not be interpreted as a real success rate.
 
 ## Repository map
 
@@ -119,4 +134,19 @@ The historical `results/retrieval_eval_results.json` remains unchanged for trace
 - `tests/`: scoring regressions, retrieval, prompt separation, error handling
 - `docs/`: evidence and midterm notes
 
-Run tests with `pip install pytest` then `python -m pytest -q`. `requirements-local.lock.txt` records the local environment; `requirements-train.txt` adds the CUDA training dependencies. The Mac lock is not a CUDA lock.
+## Verification and reproducibility
+
+The November 20 maintenance checks passed **16 tests** in a fresh Python 3.11 macOS environment and in [GitHub Actions on Linux](https://github.com/Somama12/llm-adaptation-comparison/actions/workflows/verify.yml). Checks cover scoring regressions, evidence consistency, retrieval, protection against overwriting results, and a tiny CPU adapter save/export/reload round trip with corruption detection.
+
+```sh
+python -m pip install -r requirements-train.txt pytest
+python -m pytest -q
+python -m experiments.verify_evidence
+python -m experiments.demo compare
+```
+
+The evidence command validates the published table, audit overrides, source-data hashes, and all 176 passage rankings. CI also executes fresh lexical retrieval and the saved-results demo commands. These checks do not claim a fresh full GPU training run: the additional November 20 GPU/local generation attempts were interrupted and are excluded from the published findings.
+
+The historical Week 12 results and weight hashes are preserved; a durable backup of those original weights is not verified. The updated notebook provides a retraining/export path for both adapters, with a checksum manifest. Its export/reload logic is covered by the CPU test; a completed new GPU export is not claimed. See the [reproduction guide](docs/REPRODUCIBILITY.md) for the exact distinction.
+
+`requirements-signoff-macos.lock.txt` records the fresh November 20 environment; `requirements-local.lock.txt` preserves the earlier environment. Neither is a CUDA lock. GPU training records its own runtime package versions.
