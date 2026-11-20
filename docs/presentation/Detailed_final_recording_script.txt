@@ -1,0 +1,158 @@
+NIMBUS — FINAL PRESENTATION RECORDING SCRIPT
+
+Read slides 1–18. Target about 8–9 minutes with natural pauses.
+Slides 19–22 are optional backup material, not part of the main narration.
+Timing labels are guides; rehearse once and adjust your pace. No voice track is included.
+
+SLIDE 1: LLM Adaptation Comparison
+0:00–0:20 target
+[Introduce yourself; pause briefly on the project title.]
+
+I’m Somama Siddiqui. My project compares retrieval, few-shot prompting, and LoRA fine-tuning when a company’s policies change. I built a versioned handbook, implemented all three methods, and evaluated whether they learned the new rules while preserving facts that stayed the same. I’ll show the code, the experiment design, and the results.
+
+
+SLIDE 2: Research question and original plan
+0:20–0:50 target
+[Use the refund example, then state the planned deliverable.]
+
+A support assistant can give a fluent answer that is simply out of date. For example, Nimbus changed its refund window from thirty days to forty-five. My original plan was to compare three practical update strategies, measure factual accuracy and resource use, and produce a reproducible experiment. The final deliverable is a working research pipeline with saved answers and an audit, rather than a deployed customer-support product.
+
+
+SLIDE 3: Controlled data: six changes, five stable facts
+0:50–1:15 target
+[Explain that these are synthetic policies and a small set of facts.]
+
+I used a fictional cloud-storage handbook so the correct answers and changes were explicit. It has thirteen sections and eleven evaluated facts. Six facts change, as shown here; five stay fixed, including the Pro Plan’s two terabytes of storage. The thirteen adaptation examples use different question wording from evaluation. They still cover the same facts, so this tests acquisition and retention, not generalization to unseen knowledge.
+
+
+SLIDE 4: System architecture
+1:15–1:45 target
+[Trace the handbook through the three adaptation paths, then the shared evaluation.]
+
+The architecture separates knowledge preparation from generation and evaluation. The handbook feeds a retrieval index, a set of prompt demonstrations, or a LoRA training dataset. All three GPU methods use the same Qwen model and NF4 backend. The evaluation runner stores the answer, timing, and provenance. Scoring and explicit answer review then produce the published comparison. This separation lets me inspect whether a failure came from finding evidence, generating an answer, or scoring it.
+
+
+SLIDE 5: Original, stale, and updated conditions
+1:45–2:15 target
+[Emphasize that stale is a rescore of the same answer.]
+
+The important control is how I define stale. First, the method answers using version one knowledge, and I score that answer against version one truth. Then I score the exact same answer against version two truth. I do not regenerate it. Finally, I update the method and generate a new answer against version two. For LoRA, that update continues training the same version one adapter, which makes the before-and-after pair meaningful.
+
+
+SLIDE 6: Repository and implementation map
+2:15–2:40 target
+[Point to each folder; optionally open the clickable repository link.]
+
+The repository separates the data, retrieval code, training code, and evaluation harness. The notebook is the GPU entry point. Results include raw answers as well as reviewed scores, and the reports explain how those scores were obtained. The important point is that the final table is backed by individual records and source code, not just a summary in the paper.
+
+
+SLIDE 7: RAG implementation: retrieve one policy passage
+2:40–3:10 target
+[Read the vectorization and ranking lines; do not read every line aloud.]
+
+This is the actual TF-IDF retrieval implementation. It indexes the text of each handbook section. At query time, it transforms the question into the same vector space, calculates cosine similarity, and selects the highest-ranked section. That passage becomes the model’s context. The MiniLM retriever provides the same interface with normalized sentence embeddings, so the experiment harness can swap retrieval methods without changing the rest of the workflow.
+
+
+SLIDE 8: Prompt construction and adaptation examples
+3:10–3:35 target
+[Compare the few-shot branch with the context line.]
+
+The same message builder handles retrieval and few-shot prompting. In the few-shot branch, each of the thirteen handbook examples becomes a user-and-assistant exchange. For retrieval, the prompt includes the selected policy passage. The examples are authored from handbook sections, and this code does not read the evaluation answers to construct them. That avoids copying the evaluation wording, although the underlying facts intentionally overlap.
+
+
+SLIDE 9: QLoRA: train v1, then continue on v2
+3:35–4:05 target
+[Highlight resume_adapter and the LoRA target modules.]
+
+For fine-tuning, I load the three-billion-parameter model in four-bit NF4 and train a small LoRA adapter. The rank is sixteen, targeting the query and value projection layers. The branch at the top is essential: version two loads the saved version one adapter with training enabled. Each stage uses thirteen examples and twenty epochs. Prompt tokens are masked from the loss, so training focuses on the assistant’s completion.
+
+
+SLIDE 10: Evaluation code preserves the same stale answer
+4:05–4:35 target
+[Point to the truth loop and the score_answer call.]
+
+The evaluation code records which knowledge version generated an answer and which truth version judged it. The truth loop reuses the existing output for stale scoring. Each row also stores its question ID, category, expected answer, and retrieval details. Results are saved as the run proceeds, but the run is marked complete only after all trials finish. That distinction prevents a partial output file from being mistaken for a completed experiment.
+
+
+SLIDE 11: Actual inference: the refund answer changes
+4:35–5:00 target
+[Point to both MODEL ANSWER lines in the recorded terminal capture.]
+
+This is an actual terminal capture from the local inference demonstration. The same refund question is sent through retrieval using each handbook. The first answer is thirty days, and the refreshed handbook produces forty-five days. This local demonstration uses Llama through Ollama on my Mac. The controlled three-method results on the next slide use Qwen on a Colab T4, so I keep the two environments separate.
+
+
+SLIDE 12: Final audited comparison on Qwen 2.5 3B
+5:00–5:30 target
+[Read across RAG and compare the Updated column.]
+
+These are audited counts out of eleven questions. Both retrieval methods reached eleven correct answers after the handbook refresh. Few-shot prompting reached ten. The matched LoRA update reached four after review. Notice that the original retrieval answers still scored six against the new policy; stale scoring measures actual answers, not an assumption that every changed fact must fail. Baselines were collected in Week eight and the matched LoRA sequence in Week twelve, using the same model and backend.
+
+
+SLIDE 13: LoRA: two gains and two losses
+5:30–6:00 target
+[Explain why the unchanged total hides important movement.]
+
+The flat total hides what actually changed. The updated adapter learned the sixty-day password rule and the ninety-day backup retention rule. But it lost the correct Pro Plan capacity and the current two-factor authentication requirement. Against version two truth, changed facts improved from one of six to two of six, while stable facts fell from three of five to two of five. The aggregate stayed at four, despite meaningful changes in individual answers.
+
+
+SLIDE 14: Answer audit: “required” was not enough
+6:00–6:30 target
+[Read the quoted answer and stress the difference between now and later.]
+
+This answer explains the main scoring correction. It says two-factor authentication is voluntary now but will be required later. The automatic checker initially credited it because it matched the requirement wording. The actual version two policy requires it now, so the reviewed decision is incorrect. That changes updated LoRA from five correct answers to four. I preserved the raw answer, original score, revised score, and explanation so the correction is traceable.
+
+
+SLIDE 15: Retrieval robustness under paraphrasing
+6:30–7:00 target
+[Explain top-1 versus top-3, then compare word and character matching.]
+
+I also tested whether the correct evidence remained easy to find when questions were reworded. All four lexical configurations placed the correct passage first for the original questions. On version two paraphrases, word matching found the passage in the top three for seven questions; character matching did so for ten. This analysis contains one hundred seventy-six rankings, but still only eleven facts. Better retrieval ranks are promising, although they do not establish better generated answers.
+
+
+SLIDE 16: Engineering checks and measured compute
+7:00–7:30 target
+[Separate completed tests from the unverified full-model reload.]
+
+The project also includes sixteen passing regression tests and a published-evidence checker. The checks cover scoring, question IDs, pairing, overwrite protection, and saved result consistency. A tiny CPU adapter test verifies export and reload behavior, including rejection of a corrupted archive. For the recorded T4 training, each stage took about one hundred twenty-nine seconds and peaked near three point three six gibibytes of allocated CUDA memory. Those measurements exclude model loading and are not dollar or energy costs.
+
+
+SLIDE 17: Limits and next research steps
+7:30–8:00 target
+[Be direct about scope; connect each limitation to a useful next experiment.]
+
+This is a completed small research pilot, not a universal ranking of adaptation methods. The main limitations are eleven synthetic facts, one matched training seed, overlapping training and evaluation knowledge, and an assistant-assisted audit that was not independent or blinded. The next stage should expand the dataset, repeat training across seeds, and use independent answer review. I would also test the retrieval improvements through generation and verify durable full-model checkpoint recovery.
+
+
+SLIDE 18: What the semester delivered
+8:00–8:25 target
+[Finish here; appendix slides are optional reference material.]
+
+The semester delivered a working comparison pipeline, controlled policy updates, saved experiment results, and an answer-level audit. In this study, refreshing retrieval was the most reliable update strategy. The key lesson is to inspect which facts improved and which were lost, because a single accuracy total can hide both. The code, evidence, and final report are available in the repository.
+
+
+SLIDE 19: Appendix A · Semester milestones
+OPTIONAL APPENDIX
+[Use only if asked about project progress.]
+
+The original approved proposal was not available. The final report reconstructs the initial plan from the earlier reports. The initial Week 11 completion target extended into Week 12 for the matched update and evidence audit. Later maintenance added reproducibility checks without replacing the published experimental results.
+
+
+SLIDE 20: Appendix B · All eleven LoRA answer pairs
+OPTIONAL APPENDIX
+[Use to substantiate any individual gain, loss, or unchanged answer.]
+
+Both columns use the Version 2 reference. Correctness concerns the asked core fact; unsupported extra details may remain. See the complete raw before-and-after answers and audit notes in the JSON evidence file.
+
+
+SLIDE 21: Appendix C · Training and inference recipe
+OPTIONAL APPENDIX
+[Use for questions about hyperparameters and experimental comparability.]
+
+This is the recorded training recipe, not a claim that every combination was tuned. The budget was fixed. The local Llama demonstration and Qwen GPU study remain separate. The single matched sequence is insufficient to measure seed-to-seed uncertainty.
+
+
+SLIDE 22: Appendix D · Evidence and demo commands
+OPTIONAL APPENDIX
+[Optional live walkthrough; activate the project environment first.]
+
+The compare command displays saved audited results; it does not generate new answers. Inspect shows the saved two-factor authentication failure. The ask command performs actual local inference and requires the Ollama server and cached Llama model. For a recording, use compare and inspect for a short reproducible evidence walkthrough, and use ask only if the local model is ready.
