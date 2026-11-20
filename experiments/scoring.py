@@ -15,7 +15,7 @@ def score_answer(qa, response, version):
     expected = clean(qa[f"answer_{version}"])
     if qa["id"] == "changed_2":
         # Scope matters: 'mandatory for admins' does not mean mandatory for staff.
-        optional = bool(re.match(r"^no[.! ]*$", text)) or bool(re.search(r"\b(optional|not (?:mandatory|required)|not obligated)\b", text))
+        optional = bool(re.match(r"^no[.! ]*$", text)) or bool(re.search(r"\b(optional|voluntary|not (?:mandatory|required)|not obligated)\b", text))
         required = bool(re.search(r"\b(mandatory|required|must|yes)\b", text))
         standard = "standard" in text
         admin_only = "admin" in text and not re.search(r"all (?:employee|account|staff)|including standard", text)

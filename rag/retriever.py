@@ -42,12 +42,16 @@ def chunk_markdown(path: str) -> list[Chunk]:
 
 class TfidfRetriever:
     def __init__(self, chunks: list[Chunk]):
+        if not chunks:
+            raise ValueError('Cannot index an empty corpus')
         self.chunks = chunks
         corpus = [c.text for c in chunks]
         self.vectorizer = TfidfVectorizer(stop_words="english")
         self.matrix = self.vectorizer.fit_transform(corpus)
 
     def retrieve(self, query: str, top_k: int = 1) -> list[tuple[Chunk, float]]:
+        if top_k < 1:
+            raise ValueError('top_k must be positive')
         query_vec = self.vectorizer.transform([query])
         sims = cosine_similarity(query_vec, self.matrix)[0]
         ranked_idx = sims.argsort()[::-1][:top_k]
