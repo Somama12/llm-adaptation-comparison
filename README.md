@@ -19,6 +19,7 @@ These are audited core-fact scores. Baselines come from the Week 8 study; the Lo
 
 ## Start here
 
+- [Cumulative final report (PDF)](docs/reports/final_report.pdf) and [editable LaTeX source](docs/reports/final_report.tex)
 - [Reproduce the project and export/reload adapters](docs/REPRODUCIBILITY.md)
 - [Silent presentation](docs/presentation/Nimbus_final_presentation.pptx) and [read-aloud script](docs/presentation/Recording_script.txt)
 - [Published Weeks 10–12 report](docs/reports/week10_12.pdf) and [raw/audited paired answers](results/week12/)
