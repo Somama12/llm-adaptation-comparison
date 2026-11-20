@@ -1,6 +1,7 @@
 """Compare outputs for the same eleven facts before and after a LoRA update."""
 from pathlib import Path
-import json, sys
+import argparse
+import json
 
 
 def read(folder, version):
@@ -31,9 +32,17 @@ def compare(folder):
 
 
 if __name__=='__main__':
-    folder=Path(sys.argv[1])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('folder', type=Path)
+    parser.add_argument('--output', type=Path, help='Default: FOLDER/pairs.json; must not exist')
+    args = parser.parse_args()
+    folder = args.folder
+    output = args.output or folder / 'pairs.json'
+    if output.exists():
+        parser.error('Output already exists; choose a new --output path')
     pairs=compare(folder)
-    (folder/'pairs.json').write_text(json.dumps(pairs,indent=2)+'\n')
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(pairs,indent=2)+'\n')
     for group in ('changed','stable'):
         subset=[r for r in pairs if r['category']==group]
         print(group, {k:sum((r['stale'],r['updated'])==v for r in subset) for k,v in

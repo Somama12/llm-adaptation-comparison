@@ -30,12 +30,18 @@ class PolicyDataset(Dataset):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--model', default='meta-llama/Llama-3.2-3B-Instruct')
+    p.add_argument('--model', default='Qwen/Qwen2.5-3B-Instruct')
     p.add_argument('--version', choices=['v1', 'v2'], required=True)
     p.add_argument('--output', required=True)
     p.add_argument('--resume-adapter', help='Continue adapting the v1 adapter on v2 content')
     p.add_argument('--epochs', type=int, default=20)
     args = p.parse_args()
+    if Path(args.output).exists():
+        p.error('Output already exists; use a new directory to preserve prior adapters')
+    if args.epochs < 1:
+        p.error('epochs must be positive')
+    if args.resume_adapter and not Path(args.resume_adapter, 'adapter_config.json').is_file():
+        p.error('resume-adapter must contain a saved PEFT adapter')
     if not torch.cuda.is_available():
         raise SystemExit('This training recipe requires a CUDA GPU. Select a GPU runtime in Colab.')
     set_seed(42)

@@ -21,12 +21,15 @@ def main():
     p.add_argument("--retrieval-only", action="store_true")
     p.add_argument("--model", default="llama3.2:3b")
     p.add_argument("--backend", choices=["ollama", "hf"], default="ollama")
+    p.add_argument("--url", default="http://127.0.0.1:11434", help="Ollama server URL")
     p.add_argument("--adapter")
     p.add_argument("--knowledge-versions", nargs="+", choices=["v1", "v2"], default=["v1", "v2"])
     p.add_argument("--repeats", type=int, default=1)
     p.add_argument("--qa", type=Path, default=ROOT / "eval/qa_pairs.json")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
+    if args.output.exists():
+        p.error("Output already exists; choose a new path to preserve previous evidence")
     if args.repeats < 1:
         p.error("repeats must be positive")
     if args.retrieval_only and any(m not in ["tfidf", "embedding"] for m in args.methods):
@@ -36,7 +39,7 @@ def main():
     if args.adapter and args.methods != ["lora"]:
         p.error("An adapter can only be used with --methods lora")
     qa_pairs = json.loads(args.qa.read_text())
-    model = None if args.retrieval_only else (OllamaModel(args.model) if args.backend == "ollama" else HFModel(args.model, args.adapter))
+    model = None if args.retrieval_only else (OllamaModel(args.model, url=args.url) if args.backend == "ollama" else HFModel(args.model, args.adapter))
     metadata = {"status": "running", "timestamp_utc": datetime.now(timezone.utc).isoformat(), "platform": platform.platform(),
         "python": platform.python_version(), "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "working_tree_dirty": bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip()),

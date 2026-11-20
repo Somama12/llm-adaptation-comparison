@@ -1,0 +1,29 @@
+name: Verify pilot
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  cpu-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt 'peft>=0.14,<0.23' 'accelerate>=1,<2' pytest
+          python -m pip check
+      - name: Regression and adapter serialization tests
+        run: python -m pytest -q
+      - name: Validate published evidence and demonstration commands
+        run: |
+          python -m experiments.verify_evidence
+          python -m experiments.demo compare
+          python -m experiments.demo inspect --id changed_2
+      - name: Fresh lexical retrieval execution
+        run: |
+          python -m experiments.run --retrieval-only --methods tfidf --output artifacts/ci/retrieval.json
+          python -m experiments.report --inputs artifacts/ci/retrieval.json --output artifacts/ci/results.md

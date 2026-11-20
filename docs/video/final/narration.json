@@ -1,0 +1,74 @@
+[
+  [
+    "landing",
+    "LLM Adaptation Comparison",
+    "GITHUB  /  PROJECT OVERVIEW",
+    "Suppose a customer asks for a refund thirty-five days after purchase. Yesterday that was outside the refund window. Today, they're eligible for forty-five days, subject to the handbook's usage limit. How do you get a support assistant to change its answer? This is LLM Adaptation Comparison: a Python project that tests three ways to update the knowledge of a small language model."
+  ],
+  [
+    "readme",
+    "Three ways to update an answer",
+    "GITHUB  /  README",
+    "Here's the design in the README. Retrieval supplies a handbook passage. Few-shot prompting supplies worked examples. LoRA updates a small set of weights using PyTorch and Hugging Face. All three methods answer the same eleven policy questions."
+  ],
+  [
+    "files",
+    "Find the implementation",
+    "GITHUB  /  SOURCE TREE",
+    "Here are the files behind that comparison. Data holds the handbooks, rag contains the retrievers, and experiments contains the prompts, model backends, and evaluation code. Open run dot py and you can trace one question all the way to a scored answer."
+  ],
+  [
+    "runner",
+    "Generate once; score against both policies",
+    "GITHUB  /  experiments/run.py",
+    "Notice the order of these lines. The runner retrieves the passage, builds the prompt, and generates one answer. Then it scores that same answer against both handbook versions. That's how the stale column measures yesterday's answer against today's policy, without asking the model again."
+  ],
+  [
+    "editor",
+    "From a question to its source passage",
+    "VS CODE  /  PROJECT SOURCE",
+    "Now we’re in the project itself. The retriever fits a word index over handbook sections, transforms a question into that same vocabulary, and ranks passages by cosine similarity. The demo function takes the highest-ranked passage and passes its text to the model. Notice that version one and version two each get their own index. Mixing those passages would defeat the purpose of testing a policy change."
+  ],
+  [
+    "tests",
+    "Run the regression suite",
+    "VS CODE  /  LIVE TEST RUN",
+    "Before using the model, let’s test the code behind those measurements. This is the repository’s pytest suite running in the integrated terminal. One test changes the order of the saved answers; the comparison still has to match them by question identifier. Another introduces a duplicate that would hide a missing question. That case must be rejected. Here the tests finish and the process exits successfully."
+  ],
+  [
+    "training",
+    "What the adapter update changes",
+    "VS CODE  /  TRAINING AND EVALUATION",
+    "This is the training path used on Colab. The model loads in four-bit precision. For the first run, the code adds LoRA weights to the query and value projections. For the update, it loads the existing adapter as trainable and continues on the revised examples. The paired evaluation then compares the two checkpoints against the same new targets. We’ll inspect those saved GPU answers shortly."
+  ],
+  [
+    "asklive",
+    "Ask the same question twice",
+    "LIVE INFERENCE  /  LOCAL LLAMA 3.2 3B",
+    "Here’s the refund question running locally. The command asks how many days after purchase a customer can request a full refund. First, watch which section comes back. Version one retrieves the standard refund window, and its passage says thirty days. The model answers thirty days. Now the program rebuilds the index from version two and asks exactly the same question. This time the updated passage says forty-five days, and the answer changes to forty-five. This is live inference with the local Llama model. The controlled comparison uses Qwen on a T four GPU; those are separate runs."
+  ],
+  [
+    "rank",
+    "Does rewording hide the evidence?",
+    "LIVE RUN  /  PASSAGE-RANK AUDIT",
+    "A model can’t use a policy that its retriever never finds. Here the ranking harness reruns the paraphrased questions. In the last two columns, top one means the right passage came first. Top three means it was somewhere in the first three. On version two, whole-word matching found seven of eleven within the top three. Short character sequences found ten. Adding the section title didn’t change those counts. This measures access to evidence, not answer correctness."
+  ],
+  [
+    "inspect",
+    "Read the answer behind the score",
+    "SAVED GPU OUTPUT  /  AUDIT",
+    "Now look at the saved two-factor authentication answer. The updated handbook requires it now. The model calls it voluntary now and required later. A keyword check saw the word required and awarded credit. Reading the whole sentence reverses that decision. That one correction takes the updated LoRA score from five out of eleven to four. The original output and the review decision are both preserved."
+  ],
+  [
+    "scores",
+    "Two gains and two losses",
+    "SAVED GPU OUTPUT  /  MATCHED FACTS",
+    "These rows pair each answer before and after continued training. LoRA learned the new password-reset interval and backup-retention period. It lost the two-factor rule and an unchanged fact, the Pro Plan capacity. So the total stayed flat, even though four individual outcomes changed. The two training stages each used thirteen examples and twenty epochs; the update took about one hundred twenty-nine seconds on the T four."
+  ],
+  [
+    "compare",
+    "Which method stayed current?",
+    "RESULTS  /  AUDITED CORE FACTS",
+    "Here’s the final comparison. With updated knowledge, both retrieval methods got eleven of eleven correct. Few-shot prompting got ten. LoRA got four after review. For this small handbook, replacing the retrieval source was the most reliable way to keep answers current. Eleven synthetic facts and one matched training run don’t establish a universal winner. The next useful test is a larger set of policies and repeated training runs. The code, raw answers, and report are all available alongside these results."
+  ]
+]

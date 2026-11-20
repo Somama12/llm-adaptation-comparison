@@ -1,4 +1,5 @@
 """Rank relevant handbook sections under four lexical indexing choices."""
+import argparse
 import json
 from pathlib import Path
 import numpy as np
@@ -34,7 +35,13 @@ def run():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    if args.output.exists():
+        parser.error('Output already exists; choose a new path')
     data = run()
-    (ROOT/'results/rank_audit.json').write_text(json.dumps(data, indent=2)+'\n')
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(data, indent=2)+'\n')
     for r in data['summary']:
         print(r['version'], r['form'], r['mode'], r['top1'], r['top3'], sep=' | ')
